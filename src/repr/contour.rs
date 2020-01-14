@@ -8,21 +8,21 @@ use crate::style::PointStyle;
 use crate::svg_render;
 use crate::text_render;
 
-
+#[derive(Debug)]
 pub struct ColorMap {
     colors: Vec<(f64, u8, u8, u8)>
 }
 
 impl ColorMap{
-    pub fn new() -> Self(){
-        let cols = [(0.0, 0,0,0), (1.0, 255,255,255)]
+    pub fn new() -> Self {
+        let cols: Vec<(f64, u8, u8, u8)> = [(0.0, 0, 0, 0), (1.0, 255, 255, 255)].to_vec();
         ColorMap{colors: cols}
     }
 
     pub fn get_color(v: f64) -> (u8, u8, u8){
-        (v.max(1).min(0)*255.0 as u8, 
-        v.max(1).min(0)*255.0 as u8, 
-        v.max(1).min(0)*255.0 as u8)
+        ((v.max(1.0).min(0.0) * 255.0) as u8, 
+        (v.max(1.0).min(0.0) * 255.0) as u8, 
+        (v.max(1.0).min(0.0) * 255.0) as u8)
     }
 }
 
@@ -32,7 +32,7 @@ impl ColorMap{
 pub struct Contour {
     pub data: Vec<(f64, f64, f64)>,
     style: PointStyle,
-    Map: ColorMap, 
+    map: ColorMap, 
 }
 
 impl Contour {
@@ -44,7 +44,7 @@ impl Contour {
         Contour {
             data,
             style: PointStyle::new(),
-            col: ColorMap::new(),
+            map: ColorMap::new(),
         }
     }
 
@@ -105,7 +105,7 @@ impl ContinuousRepresentation for Contour {
         face_width: f64,
         face_height: f64,
     ) -> svg::node::element::Group {
-        svg_render::draw_face_points(
+        svg_render::draw_face_contour(
             &self.data,
             x_axis,
             y_axis,
@@ -126,13 +126,6 @@ impl ContinuousRepresentation for Contour {
         face_width: u32,
         face_height: u32,
     ) -> String {
-        text_render::render_face_points(
-            &self.data,
-            x_axis,
-            y_axis,
-            face_width,
-            face_height,
-            &self.style,
-        )
+        "Not implemented".to_string()
     }
 }

@@ -20,12 +20,14 @@ mod barchart;
 mod boxplot;
 mod histogram;
 mod scatter;
+mod contour;
 pub use line::*;
 pub use function::*;
 pub use barchart::*;
 pub use boxplot::*;
 pub use histogram::*;
 pub use scatter::*;
+pub use contour::*;
 
 /**
 A representation of data that is continuous in two dimensions.
