@@ -80,6 +80,7 @@ pub mod view;
 pub mod grid;
 pub mod style;
 pub mod repr;
+pub mod colormap;
 
 mod axis;
 mod errors;

@@ -7,24 +7,8 @@ use crate::repr::ContinuousRepresentation;
 use crate::style::PointStyle;
 use crate::svg_render;
 use crate::text_render;
+use crate::colormap::ColorMap;
 
-#[derive(Debug)]
-pub struct ColorMap {
-    colors: Vec<(f64, u8, u8, u8)>
-}
-
-impl ColorMap{
-    pub fn new() -> Self {
-        let cols: Vec<(f64, u8, u8, u8)> = [(0.0, 0, 0, 0), (1.0, 255, 255, 255)].to_vec();
-        ColorMap{colors: cols}
-    }
-
-    pub fn get_color(v: f64) -> (u8, u8, u8){
-        ((v.max(1.0).min(0.0) * 255.0) as u8, 
-        (v.max(1.0).min(0.0) * 255.0) as u8, 
-        (v.max(1.0).min(0.0) * 255.0) as u8)
-    }
-}
 
 /// The scatter *representation*.
 /// It knows its data as well how to style itself
@@ -112,6 +96,7 @@ impl ContinuousRepresentation for Contour {
             face_width,
             face_height,
             &self.style,
+            &self.map,
         )
     }
     fn legend_svg(&self) -> Option<svg::node::element::Group> {

@@ -9,6 +9,7 @@ use crate::repr;
 use crate::style;
 use crate::utils;
 use crate::utils::PairWise;
+use crate::colormap::ColorMap;
 
 fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
     let range = axis.max() - axis.min();
@@ -285,6 +286,7 @@ pub fn draw_face_contour(
     face_width: f64,
     face_height: f64,
     style: &style::PointStyle,
+    cmap: &ColorMap,
 ) -> node::element::Group
 {
     let mut group = node::element::Group::new();
@@ -293,52 +295,19 @@ pub fn draw_face_contour(
         let x_pos = value_to_face_offset(x, x_axis, face_width);
         let y_pos = -value_to_face_offset(y, y_axis, face_height);
         let radius = f64::from(style.get_size().clone().unwrap_or(5.));
-        match style.get_marker().clone().unwrap_or(style::PointMarker::Circle) {
-            style::PointMarker::Circle => {
-                group.append(
-                    node::element::Circle::new()
-                        .set("cx", x_pos)
-                        .set("cy", y_pos)
-                        .set("r", radius)
-                        .set(
-                            "fill",
-                            style.get_colour().clone().unwrap_or_else(|| "".into()),
-                        ),
-                );
-            }
-            style::PointMarker::Square => {
-                group.append(
-                    node::element::Rectangle::new()
-                        .set("x", x_pos - radius)
-                        .set("y", y_pos - radius)
-                        .set("width", 2. * radius)
-                        .set("height", 2. * radius)
-                        .set(
-                            "fill",
-                            style.get_colour().clone().unwrap_or_else(|| "".into()),
-                        ),
-                );
-            }
-            style::PointMarker::Cross => {
-                let path = node::element::path::Data::new()
-                    .move_to((x_pos - radius, y_pos - radius))
-                    .line_by((radius * 2., radius * 2.))
-                    .move_by((-radius * 2., 0))
-                    .line_by((radius * 2., -radius * 2.))
-                    .close();
-                group.append(
-                    node::element::Path::new()
-                        .set("fill", "none")
-                        .set(
-                            "stroke",
-                            style.get_colour().clone().unwrap_or_else(|| "".into()),
-                        )
-                        .set("stroke-width", 2)
-                        .set("d", path),
-                );
-            }
-        };
-    }
+       
+        group.append(
+            node::element::Rectangle::new()
+                .set("x", x_pos - radius)
+                .set("y", y_pos - radius)
+                .set("width", 2. * radius)
+                .set("height", 2. * radius)
+                .set(
+                    "fill",
+                    cmap.to_str(z),
+                ),
+        );
+    };
 
 
     group
