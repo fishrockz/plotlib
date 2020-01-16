@@ -11,6 +11,13 @@ use crate::utils;
 use crate::utils::PairWise;
 use crate::colormap::{ColorMap, ColorMapping};
 
+use std::path::Path;
+use std::fs::File;
+use std::io::BufWriter;
+// To use encoder.set()
+use png::HasParameters;
+
+
 fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
     let range = axis.max() - axis.min();
     (face_size * (value - axis.min())) / range
@@ -295,6 +302,8 @@ pub fn draw_face_imgrid(
     let mut iii = 0;
     let x_size = value_to_face_offset(1.0, x_axis, face_width);
     let y_size = value_to_face_offset(1.0, y_axis, face_height);
+
+    let mut data = vec![];
     for &z in s {
         
         let y = iii / x_width;
@@ -303,20 +312,28 @@ pub fn draw_face_imgrid(
         let y_pos = -value_to_face_offset((y+1) as f64, y_axis, face_height);
         iii += 1;
        
-        group.append(
-            node::element::Rectangle::new()
-                .set("x", x_pos)
-                .set("y", y_pos)
-                .set("width", x_size)
-                .set("height", y_size)
-                .set(
-                    "fill",
-                    cmap.to_str(z),
-                ),
-        );
+        let col = cmap.get_color(z);
+        data.push(col.0);
+        data.push(col.1);
+        data.push(col.2);
+
         // https://stackoverflow.com/questions/6249664/does-svg-support-embedding-of-bitmap-images
         // https://docs.rs/png/0.11.0/png/ might be a better bet
     };
+
+
+
+
+    let path = Path::new(r"image.png");
+    let file = File::create(path).unwrap();
+    let ref mut w = BufWriter::new(file);
+
+    let mut encoder = png::Encoder::new(w, x_width as u32, y_width as u32); // Width is 2 pixels and height is 1.
+    encoder.set(png::ColorType::RGB).set(png::BitDepth::Eight);
+     let mut writer = encoder.write_header().unwrap();
+
+    //let data = [255, 0, 0, 255, 0, 0, 0, 255]; // An array containing a RGBA sequence. First pixel is red and second pixel is black.
+    writer.write_image_data(&data).unwrap(); // Save
 
 
     group
