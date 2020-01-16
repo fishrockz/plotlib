@@ -9,7 +9,7 @@ use crate::repr;
 use crate::style;
 use crate::utils;
 use crate::utils::PairWise;
-use crate::colormap::ColorMap;
+use crate::colormap::{ColorMap, ColorMapping};
 
 fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
     let range = axis.max() - axis.min();
@@ -279,29 +279,36 @@ pub fn draw_face_bars(
     group
 }
 
-pub fn draw_face_contour(
-    s: &[(f64, f64, f64)],
+pub fn draw_face_imgrid(
+    s: &[f64],
     x_axis: &axis::ContinuousAxis,
     y_axis: &axis::ContinuousAxis,
     face_width: f64,
     face_height: f64,
+    x_width: u64,
+    y_width: u64,
     style: &style::PointStyle,
-    cmap: &ColorMap,
+    cmap: &ColorMapping,
 ) -> node::element::Group
 {
     let mut group = node::element::Group::new();
-
-    for &(x, y, z) in s {
-        let x_pos = value_to_face_offset(x, x_axis, face_width);
-        let y_pos = -value_to_face_offset(y, y_axis, face_height);
-        let radius = f64::from(style.get_size().clone().unwrap_or(5.));
+    let mut iii = 0;
+    let x_size = value_to_face_offset(1.0, x_axis, face_width);
+    let y_size = value_to_face_offset(1.0, y_axis, face_height);
+    for &z in s {
+        
+        let y = iii / x_width;
+        let x = iii - y * x_width;
+        let x_pos = value_to_face_offset(x as f64, x_axis, face_width);
+        let y_pos = -value_to_face_offset((y+1) as f64, y_axis, face_height);
+        iii += 1;
        
         group.append(
             node::element::Rectangle::new()
-                .set("x", x_pos - radius)
-                .set("y", y_pos - radius)
-                .set("width", 2. * radius)
-                .set("height", 2. * radius)
+                .set("x", x_pos)
+                .set("y", y_pos)
+                .set("width", x_size)
+                .set("height", y_size)
                 .set(
                     "fill",
                     cmap.to_str(z),

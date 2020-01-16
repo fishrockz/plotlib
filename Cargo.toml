@@ -16,3 +16,4 @@ travis-ci = { repository = "milliams/plotlib" }
 [dependencies]
 svg = "0.6.0"
 failure = "0.1.6"
+hex = "0.3.1"

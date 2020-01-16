@@ -13,20 +13,23 @@ use crate::colormap::ColorMap;
 /// The scatter *representation*.
 /// It knows its data as well how to style itself
 #[derive(Debug)]
-pub struct Contour {
-    pub data: Vec<(f64, f64, f64)>,
+pub struct Imgrid {
+    pub data: Vec<f64>,
+    x_width: u64,
+    y_width: u64,
     style: PointStyle,
     map: ColorMap, 
 }
 
-impl Contour {
-    pub fn from_slice(v: &[(f64, f64, f64)]) -> Self {
-        let mut data: Vec<(f64, f64, f64)> = vec![];
-        for &(x, y, z) in v {
-            data.push((x, y, z));
+impl Imgrid {
+    pub fn from_slice(v: &[f64], x_width: u64, y_width: u64) -> Self {
+        let mut data: Vec<f64> = vec![];
+        for &z in v {
+            data.push(z);
         }
-        Contour {
+        Imgrid {
             data,
+            x_width: x_width, y_width: y_width,
             style: PointStyle::new(),
             map: ColorMap::new(),
         }
@@ -42,29 +45,17 @@ impl Contour {
     }
 
     fn x_range(&self) -> (f64, f64) {
-        let mut min = f64::INFINITY;
-        let mut max = f64::NEG_INFINITY;
-        for &(x, _, _) in &self.data {
-            min = min.min(x);
-            max = max.max(x);
-        }
-        (min, max)
+        (0f64, self.x_width as f64)
     }
 
     fn y_range(&self) -> (f64, f64) {
-        let mut min = f64::INFINITY;
-        let mut max = f64::NEG_INFINITY;
-        for &(_, y, _) in &self.data {
-            min = min.min(y);
-            max = max.max(y);
-        }
-        (min, max)
+        (0f64, self.y_width as f64)
     }
 
     fn z_range(&self) -> (f64, f64) {
         let mut min = f64::INFINITY;
         let mut max = f64::NEG_INFINITY;
-        for &(_, _, z) in &self.data {
+        for &z in &self.data {
             min = min.min(z);
             max = max.max(z);
         }
@@ -72,7 +63,7 @@ impl Contour {
     }
 }
 
-impl ContinuousRepresentation for Contour {
+impl ContinuousRepresentation for Imgrid {
     fn range(&self, dim: u32) -> (f64, f64) {
         match dim {
             0 => self.x_range(),
@@ -89,12 +80,14 @@ impl ContinuousRepresentation for Contour {
         face_width: f64,
         face_height: f64,
     ) -> svg::node::element::Group {
-        svg_render::draw_face_contour(
+        svg_render::draw_face_imgrid(
             &self.data,
             x_axis,
             y_axis,
             face_width,
             face_height,
+            self.x_width,
+            self.y_width,
             &self.style,
             &self.map,
         )
