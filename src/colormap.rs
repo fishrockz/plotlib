@@ -25,7 +25,7 @@ impl ColorMapping for ColorMap {
     fn to_str(&self, v: f64) -> String {
         let uvals = self.get_color(v);
 
-        println!("{:?}, {:?}", v, uvals);
+        //println!("{:?}, {:?}", v, uvals);
         let val = hex::encode( vec![uvals.0, uvals.1, uvals.2] ) ;
         String::from("#") + &String::from(val)
     }  

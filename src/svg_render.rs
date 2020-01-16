@@ -288,7 +288,7 @@ pub fn draw_face_imgrid(
     x_width: u64,
     y_width: u64,
     style: &style::PointStyle,
-    cmap: &ColorMapping,
+    cmap: &dyn ColorMapping,
 ) -> node::element::Group
 {
     let mut group = node::element::Group::new();
@@ -314,6 +314,8 @@ pub fn draw_face_imgrid(
                     cmap.to_str(z),
                 ),
         );
+        // https://stackoverflow.com/questions/6249664/does-svg-support-embedding-of-bitmap-images
+        // https://docs.rs/png/0.11.0/png/ might be a better bet
     };
 
 

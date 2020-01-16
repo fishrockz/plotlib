@@ -13,7 +13,7 @@ fn main() {
         }
     }
 
-    println!("{:?}", data);
+    //println!("{:?}", data);
 
     let s1 = Imgrid::from_slice(&data, n as u64, n as u64).style(
         PointStyle::new()
@@ -29,5 +29,5 @@ fn main() {
         .x_label("Some varying variable")
         .y_label("The response of something");
 
-    Page::single(&v).save("countourplot.svg").expect("saving svg");
+    Page::single(&v).save("imgridplot.svg").expect("saving svg");
 }
