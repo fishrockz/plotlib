@@ -20,9 +20,11 @@ impl ColorMap{
 
 impl ColorMapping for ColorMap {
     fn get_color(&self, v: f64) -> (u8, u8, u8){
-        ((v.max(0.0).min(1.0) * 255.0) as u8, 
-            (v.max(0.0).min(1.0) * 255.0) as u8, 
-            (v.max(0.0).min(1.0) * 255.0) as u8)
+        let clamp = v.max(0.0).min(1.0);
+        
+        ((clamp * 255.0) as u8, 
+            (clamp * 255.0) as u8, 
+            (clamp * 255.0) as u8)
         }
     fn to_str(&self, v: f64) -> String {
         let uvals = self.get_color(v);

@@ -17,6 +17,7 @@ use std::io::BufWriter;
 use std::io::Write;
 // To use encoder.set()
 use image::png::PNGEncoder;
+use image::bmp::BMPEncoder;
 use image::ColorType;
 
 use base64::encode;
@@ -272,10 +273,10 @@ pub fn draw_face_bars(
         let width = u_pos - l_pos;
         let count_scaled = value_to_face_offset(count, y_axis, face_height);
         let rect = node::element::Rectangle::new()
-            .set("x", l_pos)
-            .set("y", -count_scaled)
-            .set("width", width)
-            .set("height", count_scaled)
+            .set("X", l_pos)
+            .set("Y", -count_scaled)
+            .set("Width", width)
+            .set("Height", count_scaled)
             .set(
                 "fill",
                 style
@@ -324,28 +325,33 @@ pub fn draw_face_imgrid(
         // https://docs.rs/png/0.11.0/png/ might be a better bet
     };
 
-    println!("{:?}", data);
-    let x_pos = value_to_face_offset(0 as f64, x_axis, face_width);
-    let y_pos = value_to_face_offset(0 as f64, y_axis, face_height);
+    //println!("{:?}", data);
+    let x_pos = value_to_face_offset(x_width as f64, x_axis, face_width);
+    let y_pos = value_to_face_offset(y_width as f64, y_axis, face_height);
 
-    let mut png_buffer = Vec::new();
-    PNGEncoder::new(png_buffer.by_ref())
+    let mut bmp_buffer = Vec::new();
+    //BMPEncoder::new(bmp_buffer.by_ref())
+    //    .encode(
+    //        &data, x_width as u32, y_width as u32,
+    //        ColorType::RGB(8),
+    //    ).expect("error encoding pixels as PNG");
+    PNGEncoder::new(bmp_buffer.by_ref())
         .encode(
             &data, x_width as u32, y_width as u32,
             ColorType::RGB(8),
         ).expect("error encoding pixels as PNG");
-        
-    let b = encode(&png_buffer);
+
+    let b = encode(&bmp_buffer);
     let mut wb = String::from("data:image/png;base64,");
     wb.push_str(&b);
 
     group.append(
         node::element::Image::new()
             .set("xlink:href", wb.as_str())
-            .set("hight","100")
-            .set("width","100")
-            .set("x", x_pos)
-            .set("y", y_pos)
+            .set("height", y_pos)
+            .set("width", x_pos)
+            .set("x", 0)
+            .set("y", -y_pos)
             
     );
 
