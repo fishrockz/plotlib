@@ -7,7 +7,7 @@ use crate::repr::ContinuousRepresentation;
 use crate::style::PointStyle;
 use crate::svg_render;
 use crate::text_render;
-use crate::colormap::ColorMap;
+use crate::colormap::viridisMap;
 
 
 /// The scatter *representation*.
@@ -18,7 +18,7 @@ pub struct Imgrid {
     x_width: u64,
     y_width: u64,
     style: PointStyle,
-    map: ColorMap, 
+    map: viridisMap, 
 }
 
 impl Imgrid {
@@ -31,7 +31,7 @@ impl Imgrid {
             data,
             x_width: x_width, y_width: y_width,
             style: PointStyle::new(),
-            map: ColorMap::new(),
+            map: viridisMap::new(),
         }
     }
 
