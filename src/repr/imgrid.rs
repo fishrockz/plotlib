@@ -3,12 +3,11 @@ use std::f64;
 use svg;
 
 use crate::axis;
+use crate::colormap::viridisMap;
 use crate::repr::ContinuousRepresentation;
 use crate::style::PointStyle;
 use crate::svg_render;
 use crate::text_render;
-use crate::colormap::viridisMap;
-
 
 /// The scatter *representation*.
 /// It knows its data as well how to style itself
@@ -18,7 +17,7 @@ pub struct Imgrid {
     x_width: u64,
     y_width: u64,
     style: PointStyle,
-    map: viridisMap, 
+    map: viridisMap,
 }
 
 impl Imgrid {
@@ -29,7 +28,8 @@ impl Imgrid {
         }
         Imgrid {
             data,
-            x_width: x_width, y_width: y_width,
+            x_width: x_width,
+            y_width: y_width,
             style: PointStyle::new(),
             map: viridisMap::new(),
         }
