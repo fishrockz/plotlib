@@ -1,29 +1,22 @@
-use crate::scatter;
-use crate::repr;
-use crate::text_render;
-use crate::svg_render;
+use page:Page;
 
-pub trait Render {
-    fn to_svg(&self) -> svg_render::SVG;
-    fn to_text(&self) -> text_render::Text;
+pub trait Renderer{
+    fn draw_text();
+    fn draw_line();
 }
 
-impl Render for scatter::Scatter {
-    fn to_text(&self) -> text_render::Text {
-        text_render::Text {data: text_render::draw_scatter(self)}
-    }
+struct svgRender{
+    fileobject: thing
+}
 
-    fn to_svg(&self) -> svg_render::SVG {
-        svg_render::draw_scatter(self)
+impl svgRender for svgRender{
+    fn draw_text(){
+        
+    }
+    fn draw_line(){
+
     }
 }
 
-impl Render for repr::Histogram {
-    fn to_text(&self) -> text_render::Text {
-        text_render::Text {data: text_render::draw_histogram(self)}
-    }
 
-    fn to_svg(&self) -> svg_render::SVG {
-        svg_render::draw_histogram(self)
-    }
-}
+

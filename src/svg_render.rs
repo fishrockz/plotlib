@@ -4,24 +4,23 @@ use svg::node;
 use svg::Node;
 
 use crate::axis;
+use crate::colormap::{ColorMap, ColorMapping};
 use crate::grid::GridType;
 use crate::repr;
 use crate::style;
 use crate::utils;
 use crate::utils::PairWise;
-use crate::colormap::{ColorMap, ColorMapping};
 
-use std::path::Path;
 use std::fs::File;
 use std::io::BufWriter;
 use std::io::Write;
+use std::path::Path;
 // To use encoder.set()
-use image::png::PNGEncoder;
 use image::bmp::BMPEncoder;
+use image::png::PNGEncoder;
 use image::ColorType;
 
 use base64::encode;
-
 
 fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
     let range = axis.max() - axis.min();
@@ -198,15 +197,18 @@ pub fn draw_face_points(
     face_width: f64,
     face_height: f64,
     style: &style::PointStyle,
-) -> node::element::Group
-{
+) -> node::element::Group {
     let mut group = node::element::Group::new();
 
     for &(x, y) in s {
         let x_pos = value_to_face_offset(x, x_axis, face_width);
         let y_pos = -value_to_face_offset(y, y_axis, face_height);
         let radius = f64::from(style.get_size().clone().unwrap_or(5.));
-        match style.get_marker().clone().unwrap_or(style::PointMarker::Circle) {
+        match style
+            .get_marker()
+            .clone()
+            .unwrap_or(style::PointMarker::Circle)
+        {
             style::PointMarker::Circle => {
                 group.append(
                     node::element::Circle::new()
@@ -263,8 +265,7 @@ pub fn draw_face_bars(
     face_width: f64,
     face_height: f64,
     style: &style::BoxStyle,
-) -> node::element::Group
-{
+) -> node::element::Group {
     let mut group = node::element::Group::new();
 
     for ((&l, &u), &count) in h.bin_bounds.pairwise().zip(h.get_values()) {
@@ -301,8 +302,7 @@ pub fn draw_face_imgrid(
     y_width: u64,
     style: &style::PointStyle,
     cmap: &dyn ColorMapping,
-) -> node::element::Group
-{
+) -> node::element::Group {
     let mut group = node::element::Group::new();
     let mut iii = 0;
     let x_size = value_to_face_offset(1.0, x_axis, face_width);
@@ -310,12 +310,11 @@ pub fn draw_face_imgrid(
 
     let mut data = vec![];
     for &z in s {
-        
         let y = iii / x_width;
         let x = iii - y * x_width;
 
         iii += 1;
-       
+
         let col = cmap.get_color(z);
         data.push(col.0);
         data.push(col.1);
@@ -323,7 +322,7 @@ pub fn draw_face_imgrid(
 
         // https://stackoverflow.com/questions/6249664/does-svg-support-embedding-of-bitmap-images
         // https://docs.rs/png/0.11.0/png/ might be a better bet
-    };
+    }
 
     //println!("{:?}", data);
     let x_pos = value_to_face_offset(x_width as f64, x_axis, face_width);
@@ -336,10 +335,8 @@ pub fn draw_face_imgrid(
     //        ColorType::RGB(8),
     //    ).expect("error encoding pixels as PNG");
     PNGEncoder::new(bmp_buffer.by_ref())
-        .encode(
-            &data, x_width as u32, y_width as u32,
-            ColorType::RGB(8),
-        ).expect("error encoding pixels as PNG");
+        .encode(&data, x_width as u32, y_width as u32, ColorType::RGB(8))
+        .expect("error encoding pixels as PNG");
 
     let b = encode(&bmp_buffer);
     let mut wb = String::from("data:image/png;base64,");
@@ -351,8 +348,7 @@ pub fn draw_face_imgrid(
             .set("height", y_pos)
             .set("width", x_pos)
             .set("x", 0)
-            .set("y", -y_pos)
-            
+            .set("y", -y_pos),
     );
 
     group
@@ -365,8 +361,7 @@ pub fn draw_face_line(
     face_width: f64,
     face_height: f64,
     style: &style::LineStyle,
-) -> node::element::Group
-{
+) -> node::element::Group {
     let mut group = node::element::Group::new();
 
     let mut d: Vec<node::element::path::Command> = vec![];
@@ -396,10 +391,17 @@ pub fn draw_face_line(
                 style.get_colour().clone().unwrap_or_else(|| "".into()),
             )
             .set("stroke-width", style.get_width().clone().unwrap_or(2.))
-            .set("stroke-linejoin", match style.get_linejoin().clone().unwrap_or(style::LineJoin::Round) {
-                style::LineJoin::Miter => "miter",
-                style::LineJoin::Round => "round",
-            })
+            .set(
+                "stroke-linejoin",
+                match style
+                    .get_linejoin()
+                    .clone()
+                    .unwrap_or(style::LineJoin::Round)
+                {
+                    style::LineJoin::Miter => "miter",
+                    style::LineJoin::Round => "round",
+                },
+            )
             .set("d", path),
     );
 

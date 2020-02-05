@@ -21,7 +21,7 @@ fn main() {
             .colour("burlywood")
             .size(2.),
     );
-    
+
     let v = ContinuousView::new()
         .add(s1)
         .x_range(1., 5.)

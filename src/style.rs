@@ -90,7 +90,6 @@ pub enum PointMarker {
     Cross,
 }
 
-
 #[derive(Debug, Default)]
 pub struct PointStyle {
     marker: Option<PointMarker>,
@@ -156,7 +155,6 @@ impl PointStyle {
     }
 }
 
-
 #[derive(Debug, Default)]
 pub struct BoxStyle {
     fill: Option<String>,
@@ -203,7 +201,12 @@ mod tests {
     #[test]
     fn test_linestyle_plain_overlay() {
         let mut p = LineStyle::new();
-        p.overlay(LineStyle::new().colour("red").linejoin(LineJoin::Miter).width(1.));
+        p.overlay(
+            LineStyle::new()
+                .colour("red")
+                .linejoin(LineJoin::Miter)
+                .width(1.),
+        );
         assert_eq!(*p.get_colour(), Some("red".into()));
         assert_eq!(*p.get_width(), Some(1.));
         assert!(match p.get_linejoin() {

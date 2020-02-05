@@ -60,8 +60,9 @@ impl<'a> Page<'a> {
     */
     pub fn to_svg(&self) -> Result<svg::Document> {
         let (width, height) = self.dimensions;
-        let mut document = Document::new().set("viewBox", (0, 0, width, height))
-        .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
+        let mut document = Document::new()
+            .set("viewBox", (0, 0, width, height))
+            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
 
         let x_margin = 90; // should actually depend on y-axis label font size
         let y_margin = 60;
