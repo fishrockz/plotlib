@@ -24,8 +24,8 @@ fn main() {
     
     let v = ContinuousView::new()
         .add(s1)
-        .x_range(0., 5.)
-        .y_range(0., 5.)
+        .x_range(1., 5.)
+        .y_range(1., 5.)
         .x_label("Some varying variable")
         .y_label("The response of something");
 
