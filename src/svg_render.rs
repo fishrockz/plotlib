@@ -14,6 +14,8 @@ pub struct Plotter {
     top: node::element::Group,
 }
 
+
+
 impl Plotter {
     pub fn new() -> Self {
         let top_group = node::element::Group::new();
@@ -47,7 +49,6 @@ impl Plotter {
         );
         document.append( tg );
         document
-        
     }
 }
 
