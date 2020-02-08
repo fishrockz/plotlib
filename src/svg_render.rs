@@ -7,7 +7,6 @@ use std::path::Path;
 use svg;
 use svg::node;
 use svg::Node;
-use svg::Document;
 
 pub struct Plotter {
     dimensions: (u32, u32),
@@ -75,7 +74,7 @@ impl Renderer for Plotter {
     ){
         let xaxgp = draw_x_axis(x_axis, face_width);
         self.top.append(xaxgp);
-        let yaxgp = draw_y_axis(x_axis, face_height);
+        let yaxgp = draw_y_axis(y_axis, face_height);
         self.top.append(yaxgp);
     }
 
