@@ -168,6 +168,8 @@ impl View for ContinuousView {
         // TODO: deal with failured
         let (x_axis, y_axis) = self.create_axes().unwrap();
 
+        RenderAbst.plot_axis(&x_axis, &y_axis, face_width, face_height);
+
         for repr in &self.representations {
             let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
         }
@@ -391,6 +393,9 @@ impl View for CategoricalView {
     fn plot(&self, RenderAbst: &mut dyn Renderer, face_width: f64, face_height: f64) {
         // TODO: deal with failured
         let (x_axis, y_axis) = self.create_axes().unwrap();
+
+        // TODO: plot the axis hear!
+        //RenderAbst.plot_axis(&x_axis, &y_axis, face_width, face_height);
 
         for repr in &self.representations {
             let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);

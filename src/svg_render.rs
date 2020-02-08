@@ -55,11 +55,24 @@ impl Renderer for Plotter {
         face_height: f64,
         style: &style::PointStyle,
     ) {
+        let points = draw_face_points(s, x_axis, y_axis, face_width, face_height, style);
+        self.top.append(points);
+    }
+
+    fn plot_axis(
+        &mut self,
+        x_axis: &axis::ContinuousAxis,
+        y_axis: &axis::ContinuousAxis,
+        face_width: f64,
+        face_height: f64,
+    ){
         let xaxgp = draw_x_axis(x_axis, face_width);
         self.top.append(xaxgp);
         let yaxgp = draw_y_axis(x_axis, face_height);
         self.top.append(yaxgp);
     }
+
+
 }
 
 pub fn draw_x_axis(a: &axis::ContinuousAxis, face_width: f64) -> node::element::Group {
@@ -188,6 +201,74 @@ pub fn draw_y_axis(a: &axis::ContinuousAxis, face_height: f64) -> node::element:
         .add(label)
 }
 
+pub fn draw_face_points(
+    s: &[(f64, f64)],
+    x_axis: &axis::ContinuousAxis,
+    y_axis: &axis::ContinuousAxis,
+    face_width: f64,
+    face_height: f64,
+    style: &style::PointStyle,
+) -> node::element::Group {
+    let mut group = node::element::Group::new();
+
+    for &(x, y) in s {
+        let x_pos = value_to_face_offset(x, x_axis, face_width);
+        let y_pos = -value_to_face_offset(y, y_axis, face_height);
+        let radius = f64::from(style.get_size().clone().unwrap_or(5.));
+        match style
+            .get_marker()
+            .clone()
+            .unwrap_or(style::PointMarker::Circle)
+        {
+            style::PointMarker::Circle => {
+                group.append(
+                    node::element::Circle::new()
+                        .set("cx", x_pos)
+                        .set("cy", y_pos)
+                        .set("r", radius)
+                        .set(
+                            "fill",
+                            style.get_colour().clone().unwrap_or_else(|| "".into()),
+                        ),
+                );
+            }
+            style::PointMarker::Square => {
+                group.append(
+                    node::element::Rectangle::new()
+                        .set("x", x_pos - radius)
+                        .set("y", y_pos - radius)
+                        .set("width", 2. * radius)
+                        .set("height", 2. * radius)
+                        .set(
+                            "fill",
+                            style.get_colour().clone().unwrap_or_else(|| "".into()),
+                        ),
+                );
+            }
+            style::PointMarker::Cross => {
+                let path = node::element::path::Data::new()
+                    .move_to((x_pos - radius, y_pos - radius))
+                    .line_by((radius * 2., radius * 2.))
+                    .move_by((-radius * 2., 0))
+                    .line_by((radius * 2., -radius * 2.))
+                    .close();
+                group.append(
+                    node::element::Path::new()
+                        .set("fill", "none")
+                        .set(
+                            "stroke",
+                            style.get_colour().clone().unwrap_or_else(|| "".into()),
+                        )
+                        .set("stroke-width", 2)
+                        .set("d", path),
+                );
+            }
+        };
+    }
+
+    group
+}
+
 /*
         let mut document = Document::new()
             .set("viewBox", (0, 0, width, height))
@@ -281,73 +362,7 @@ pub fn draw_categorical_x_axis(a: &axis::CategoricalAxis, face_width: f64) -> no
         .add(label)
 }
 
-pub fn draw_face_points(
-    s: &[(f64, f64)],
-    x_axis: &axis::ContinuousAxis,
-    y_axis: &axis::ContinuousAxis,
-    face_width: f64,
-    face_height: f64,
-    style: &style::PointStyle,
-) -> node::element::Group {
-    let mut group = node::element::Group::new();
 
-    for &(x, y) in s {
-        let x_pos = value_to_face_offset(x, x_axis, face_width);
-        let y_pos = -value_to_face_offset(y, y_axis, face_height);
-        let radius = f64::from(style.get_size().clone().unwrap_or(5.));
-        match style
-            .get_marker()
-            .clone()
-            .unwrap_or(style::PointMarker::Circle)
-        {
-            style::PointMarker::Circle => {
-                group.append(
-                    node::element::Circle::new()
-                        .set("cx", x_pos)
-                        .set("cy", y_pos)
-                        .set("r", radius)
-                        .set(
-                            "fill",
-                            style.get_colour().clone().unwrap_or_else(|| "".into()),
-                        ),
-                );
-            }
-            style::PointMarker::Square => {
-                group.append(
-                    node::element::Rectangle::new()
-                        .set("x", x_pos - radius)
-                        .set("y", y_pos - radius)
-                        .set("width", 2. * radius)
-                        .set("height", 2. * radius)
-                        .set(
-                            "fill",
-                            style.get_colour().clone().unwrap_or_else(|| "".into()),
-                        ),
-                );
-            }
-            style::PointMarker::Cross => {
-                let path = node::element::path::Data::new()
-                    .move_to((x_pos - radius, y_pos - radius))
-                    .line_by((radius * 2., radius * 2.))
-                    .move_by((-radius * 2., 0))
-                    .line_by((radius * 2., -radius * 2.))
-                    .close();
-                group.append(
-                    node::element::Path::new()
-                        .set("fill", "none")
-                        .set(
-                            "stroke",
-                            style.get_colour().clone().unwrap_or_else(|| "".into()),
-                        )
-                        .set("stroke-width", 2)
-                        .set("d", path),
-                );
-            }
-        };
-    }
-
-    group
-}
 
 pub fn draw_face_bars(
     h: &repr::Histogram,

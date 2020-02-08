@@ -11,4 +11,11 @@ pub trait Renderer {
         face_height: f64,
         style: &style::PointStyle,
     );
+    fn plot_axis(
+        &mut self,
+        x_axis: &axis::ContinuousAxis,
+        y_axis: &axis::ContinuousAxis,
+        face_width: f64,
+        face_height: f64,
+    );
 }
