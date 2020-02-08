@@ -1,3 +1,50 @@
+use crate::axis;
+use crate::style;
+use crate::render::Renderer;
+
+use std::path::Path;
+
+use svg::node;
+use svg::Document;
+
+pub struct Plotter{
+    topnode: Document,
+}
+
+impl Plotter{
+    pub fn new () -> Self {
+        let topg = node::element::Group::new();
+        let mut document = Document::new()
+            .set("viewBox", (0, 0, 600, 400))
+            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
+
+        Plotter{
+            topnode: document,
+        }
+    }
+    pub fn save<P> (self, path: P)    
+    where
+    P: AsRef<Path>, {}
+}
+
+impl Renderer for Plotter{
+    fn face_points(&mut self,
+        s: &[(f64, f64)],
+        x_axis: &axis::ContinuousAxis,
+        y_axis: &axis::ContinuousAxis,
+        face_width: f64,
+        face_height: f64,
+        style: &style::PointStyle,
+    ){
+
+    }
+}
+/*
+        let mut document = Document::new()
+            .set("viewBox", (0, 0, width, height))
+            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
+*/
+
 
 /*
 use std;

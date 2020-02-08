@@ -5,13 +5,13 @@ The `page` module provides structures for laying out and rendering multiple view
 use std::ffi::OsStr;
 use std::path::Path;
 
-use svg;
-use svg::Document;
-use svg::Node;
+
 
 use crate::errors::Result;
 use crate::view::View;
 use crate::render::Renderer;
+
+use crate::svg_render::Plotter;
 
 use failure::ResultExt;
 
@@ -63,9 +63,7 @@ impl<'a> Page<'a> {
     */
     pub fn plot(&self, plotTo: &mut dyn Renderer)  {
         let (width, height) = self.dimensions;
-        let mut document = Document::new()
-            .set("viewBox", (0, 0, width, height))
-            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
+
 
         let x_margin = 90; // should actually depend on y-axis label font size
         let y_margin = 60;
@@ -91,17 +89,20 @@ impl<'a> Page<'a> {
     The type of file will be based on the file extension.
     */
 
-    /*
+    
     pub fn save<P>(&self, path: P) -> Result<()>
     where
         P: AsRef<Path>,
     {
         match path.as_ref().extension().and_then(OsStr::to_str) {
-            Some("svg") => svg::save(path, &self.to_svg()?)
-                .context("saving svg")
-                .map_err(From::from),
+            Some("svg") => {
+                let mut svgpainter = Plotter::new();
+                self.plot(&mut svgpainter);
+                svgpainter.save(path);
+                Ok(())
+            },
             _ => Ok(()),
         }
     }
-    */
+    
 }
