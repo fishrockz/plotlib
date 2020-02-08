@@ -41,7 +41,7 @@ impl Plotter {
             format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
         );
         document.append( tg );
-        svg::save(path, &mut document);
+        svg::save(path, &mut document).unwrap();
     }
 }
 
@@ -55,8 +55,10 @@ impl Renderer for Plotter {
         face_height: f64,
         style: &style::PointStyle,
     ) {
-        let axgp = draw_x_axis(x_axis, face_width);
-        self.top.append(axgp);
+        let xaxgp = draw_x_axis(x_axis, face_width);
+        self.top.append(xaxgp);
+        let yaxgp = draw_y_axis(x_axis, face_height);
+        self.top.append(yaxgp);
     }
 }
 
@@ -116,48 +118,6 @@ where
 fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
     let range = axis.max() - axis.min();
     (face_size * (value - axis.min())) / range
-}
-
-/*
-        let mut document = Document::new()
-            .set("viewBox", (0, 0, width, height))
-            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
-*/
-
-/*
-use std;
-
-use svg::node;
-use svg::Node;
-
-use crate::axis;
-use crate::colormap::{ColorMap, ColorMapping};
-use crate::grid::GridType;
-use crate::repr;
-use crate::style;
-use crate::utils;
-use crate::utils::PairWise;
-
-use std::fs::File;
-use std::io::BufWriter;
-use std::io::Write;
-use std::path::Path;
-// To use encoder.set()
-use image::bmp::BMPEncoder;
-use image::png::PNGEncoder;
-use image::ColorType;
-
-use base64::encode;
-
-use crate::render::Renderer;
-
-struct svgRender {
-    fileobject: thing,
-}
-
-impl Renderer for svgRender {
-    fn draw_text() {}
-    fn draw_line() {}
 }
 
 
@@ -227,6 +187,51 @@ pub fn draw_y_axis(a: &axis::ContinuousAxis, face_height: f64) -> node::element:
         .add(labels)
         .add(label)
 }
+
+/*
+        let mut document = Document::new()
+            .set("viewBox", (0, 0, width, height))
+            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
+*/
+
+/*
+use std;
+
+use svg::node;
+use svg::Node;
+
+use crate::axis;
+use crate::colormap::{ColorMap, ColorMapping};
+use crate::grid::GridType;
+use crate::repr;
+use crate::style;
+use crate::utils;
+use crate::utils::PairWise;
+
+use std::fs::File;
+use std::io::BufWriter;
+use std::io::Write;
+use std::path::Path;
+// To use encoder.set()
+use image::bmp::BMPEncoder;
+use image::png::PNGEncoder;
+use image::ColorType;
+
+use base64::encode;
+
+use crate::render::Renderer;
+
+struct svgRender {
+    fileobject: thing,
+}
+
+impl Renderer for svgRender {
+    fn draw_text() {}
+    fn draw_line() {}
+}
+
+
+
 
 pub fn draw_categorical_x_axis(a: &axis::CategoricalAxis, face_width: f64) -> node::element::Group {
     let axis_line = node::element::Line::new()
