@@ -16,15 +16,20 @@ pub struct Plotter {
 
 impl Plotter {
     pub fn new() -> Self {
-        let mut top_group = node::element::Group::new();
+        let top_group = node::element::Group::new();
         //let mut view_group = svg::node::element::Group::new();
         
         Plotter {top: top_group, dimensions: (600, 340), }
     }
-    pub fn save<P>(mut self, path: P)
+    pub fn save<P>(self, path: P)
     where
         P: AsRef<Path>,
     {
+        let document = self.to_doc();
+        svg::save(path, &document).unwrap();
+    }
+
+    pub fn to_doc(self) -> svg::Document{
         let (width, height) = self.dimensions;
         
         let mut document = svg::Document::new()
@@ -41,7 +46,8 @@ impl Plotter {
             format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
         );
         document.append( tg );
-        svg::save(path, &mut document).unwrap();
+        document
+        
     }
 }
 
