@@ -21,7 +21,7 @@ impl Plotter {
         
         Plotter {top: top_group, dimensions: (600, 340), }
     }
-    pub fn save<P>(&self, path: P)
+    pub fn save<P>(&mut self, path: P)
     where
         P: AsRef<Path>,
     {
@@ -36,7 +36,7 @@ impl Plotter {
             let x_offset = 0.6 * f64::from(x_margin);
             let y_offset = 0.6 * f64::from(y_margin);
 
-        let tg = &mut self.top.set(
+        let tg = &self.top.set(
             "transform",
             format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
         );
