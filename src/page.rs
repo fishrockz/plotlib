@@ -5,17 +5,13 @@ The `page` module provides structures for laying out and rendering multiple view
 use std::ffi::OsStr;
 use std::path::Path;
 
-
-
 use crate::errors::Result;
-use crate::view::View;
 use crate::render::Renderer;
+use crate::view::View;
 
 use crate::svg_render::Plotter;
 
 use failure::ResultExt;
-
-
 
 /**
 A single page page laying out the views in a grid
@@ -61,9 +57,8 @@ impl<'a> Page<'a> {
     /**
     Render the plot to an svg document
     */
-    pub fn plot(&self, plotTo: &mut dyn Renderer)  {
+    pub fn plot(&self, plotTo: &mut dyn Renderer) {
         let (width, height) = self.dimensions;
-
 
         let x_margin = 90; // should actually depend on y-axis label font size
         let y_margin = 60;
@@ -72,8 +67,12 @@ impl<'a> Page<'a> {
 
         // TODO put multiple views in correct places
         for &view in &self.views {
-            let view_group = view.plot(plotTo, f64::from(width - x_margin), f64::from(height - y_margin) );
-                /*.to_svg(f64::from(width - x_margin), f64::from(height - y_margin))?
+            let view_group = view.plot(
+                plotTo,
+                f64::from(width - x_margin),
+                f64::from(height - y_margin),
+            );
+            /*.to_svg(f64::from(width - x_margin), f64::from(height - y_margin))?
                 .set(
                     "transform",
                     format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
@@ -89,7 +88,6 @@ impl<'a> Page<'a> {
     The type of file will be based on the file extension.
     */
 
-    
     pub fn save<P>(&self, path: P) -> Result<()>
     where
         P: AsRef<Path>,
@@ -100,9 +98,8 @@ impl<'a> Page<'a> {
                 self.plot(&mut svgpainter);
                 svgpainter.save(path);
                 Ok(())
-            },
+            }
             _ => Ok(()),
         }
     }
-    
 }

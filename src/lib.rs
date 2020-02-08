@@ -78,14 +78,13 @@ in this case, interpreting the bins and colours to create SVG elements.
 pub mod colormap;
 pub mod grid;
 pub mod page;
+pub mod render;
 pub mod repr;
 pub mod style;
 pub mod view;
-pub mod render;
 
 mod axis;
 mod errors;
 mod svg_render;
 mod text_render;
 mod utils;
-

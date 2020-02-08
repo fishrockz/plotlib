@@ -1,8 +1,9 @@
 use crate::axis;
 use crate::style;
 
-pub trait Renderer{
-    fn face_points(&mut self,
+pub trait Renderer {
+    fn face_points(
+        &mut self,
         s: &[(f64, f64)],
         x_axis: &axis::ContinuousAxis,
         y_axis: &axis::ContinuousAxis,
@@ -11,8 +12,3 @@ pub trait Renderer{
         style: &style::PointStyle,
     );
 }
-
-
-
-
-

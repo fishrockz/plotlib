@@ -15,11 +15,11 @@ use svg::Node;
 use crate::axis;
 use crate::errors::Result;
 use crate::grid::{Grid, GridType};
-use crate::repr::{CategoricalRepresentation, ContinuousRepresentation};
 use crate::render::Renderer;
+use crate::repr::{CategoricalRepresentation, ContinuousRepresentation};
 
 pub trait View {
-    fn plot(&self,  RenderAbst: &mut dyn Renderer, face_width: f64, face_height: f64);
+    fn plot(&self, RenderAbst: &mut dyn Renderer, face_width: f64, face_height: f64);
     fn add_grid(&mut self, grid: Grid);
     fn grid(&self) -> &Option<Grid>;
 }
@@ -163,8 +163,8 @@ impl View for ContinuousView {
         RenderAbst: &mut dyn Renderer,
         // TODO: we now need a offset?
         face_width: f64,
-        face_height: f64
-    ){
+        face_height: f64,
+    ) {
         // TODO: deal with failured
         let (x_axis, y_axis) = self.create_axes().unwrap();
 
@@ -389,12 +389,12 @@ impl CategoricalView {
 
 impl View for CategoricalView {
     fn plot(&self, RenderAbst: &mut dyn Renderer, face_width: f64, face_height: f64) {
-                // TODO: deal with failured
-                let (x_axis, y_axis) = self.create_axes().unwrap();
+        // TODO: deal with failured
+        let (x_axis, y_axis) = self.create_axes().unwrap();
 
-                for repr in &self.representations {
-                    let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
-                }
+        for repr in &self.representations {
+            let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
+        }
     }
     /*
         let mut view_group = svg::node::element::Group::new();

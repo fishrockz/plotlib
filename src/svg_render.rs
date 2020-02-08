@@ -1,116 +1,63 @@
 use crate::axis;
-use crate::style;
 use crate::render::Renderer;
+use crate::style;
 
 use std::path::Path;
 
+use svg;
 use svg::node;
+use svg::Node;
 use svg::Document;
 
-pub struct Plotter{
-    topnode: Document,
+pub struct Plotter {
+    dimensions: (u32, u32),
+    top: node::element::Group,
 }
 
-impl Plotter{
-    pub fn new () -> Self {
-        let topg = node::element::Group::new();
-        let mut document = Document::new()
-            .set("viewBox", (0, 0, 600, 400))
-            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
-
-        Plotter{
-            topnode: document,
-        }
+impl Plotter {
+    pub fn new() -> Self {
+        let mut top_group = node::element::Group::new();
+        //let mut view_group = svg::node::element::Group::new();
+        
+        Plotter {top: top_group, dimensions: (600, 340), }
     }
-    pub fn save<P> (self, path: P)    
+    pub fn save<P>(&self, path: P)
     where
-    P: AsRef<Path>, {}
+        P: AsRef<Path>,
+    {
+        let (width, height) = self.dimensions;
+        
+        let mut document = svg::Document::new()
+            .set("viewBox", (0, 0, width, height))
+            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
+            
+            let x_margin = 90; // should actually depend on y-axis label font size
+            let y_margin = 60;
+            let x_offset = 0.6 * f64::from(x_margin);
+            let y_offset = 0.6 * f64::from(y_margin);
+
+        let tg = &mut self.top.set(
+            "transform",
+            format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
+        );
+        document.append( tg );
+        svg::save(path, &mut document);
+    }
 }
 
-impl Renderer for Plotter{
-    fn face_points(&mut self,
+impl Renderer for Plotter {
+    fn face_points(
+        &mut self,
         s: &[(f64, f64)],
         x_axis: &axis::ContinuousAxis,
         y_axis: &axis::ContinuousAxis,
         face_width: f64,
         face_height: f64,
         style: &style::PointStyle,
-    ){
-
+    ) {
+        let axgp = draw_x_axis(x_axis, face_width);
+        self.top.append(axgp);
     }
-}
-/*
-        let mut document = Document::new()
-            .set("viewBox", (0, 0, width, height))
-            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
-*/
-
-
-/*
-use std;
-
-use svg::node;
-use svg::Node;
-
-use crate::axis;
-use crate::colormap::{ColorMap, ColorMapping};
-use crate::grid::GridType;
-use crate::repr;
-use crate::style;
-use crate::utils;
-use crate::utils::PairWise;
-
-use std::fs::File;
-use std::io::BufWriter;
-use std::io::Write;
-use std::path::Path;
-// To use encoder.set()
-use image::bmp::BMPEncoder;
-use image::png::PNGEncoder;
-use image::ColorType;
-
-use base64::encode;
-
-use crate::render::Renderer;
-
-struct svgRender {
-    fileobject: thing,
-}
-
-impl Renderer for svgRender {
-    fn draw_text() {}
-    fn draw_line() {}
-}
-
-fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
-    let range = axis.max() - axis.min();
-    (face_size * (value - axis.min())) / range
-}
-
-fn vertical_line<S>(xpos: f64, ymin: f64, ymax: f64, color: S) -> node::element::Line
-where
-    S: AsRef<str>,
-{
-    node::element::Line::new()
-        .set("x1", xpos)
-        .set("x2", xpos)
-        .set("y1", ymin)
-        .set("y2", ymax)
-        .set("stroke", color.as_ref())
-        .set("stroke-width", 1)
-}
-
-fn horizontal_line<S>(ypos: f64, xmin: f64, xmax: f64, color: S) -> node::element::Line
-where
-    S: AsRef<str>,
-{
-    node::element::Line::new()
-        .set("x1", xmin)
-        .set("x2", xmax)
-        .set("y1", ypos)
-        .set("y2", ypos)
-        .set("stroke", color.as_ref())
-        .set("stroke-width", 1)
 }
 
 pub fn draw_x_axis(a: &axis::ContinuousAxis, face_width: f64) -> node::element::Group {
@@ -152,6 +99,85 @@ pub fn draw_x_axis(a: &axis::ContinuousAxis, face_width: f64) -> node::element::
         .add(labels)
         .add(label)
 }
+
+fn horizontal_line<S>(ypos: f64, xmin: f64, xmax: f64, color: S) -> node::element::Line
+where
+    S: AsRef<str>,
+{
+    node::element::Line::new()
+        .set("x1", xmin)
+        .set("x2", xmax)
+        .set("y1", ypos)
+        .set("y2", ypos)
+        .set("stroke", color.as_ref())
+        .set("stroke-width", 1)
+}
+
+fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
+    let range = axis.max() - axis.min();
+    (face_size * (value - axis.min())) / range
+}
+
+/*
+        let mut document = Document::new()
+            .set("viewBox", (0, 0, width, height))
+            .set("xmlns:xlink", "http://www.w3.org/1999/xlink");
+*/
+
+/*
+use std;
+
+use svg::node;
+use svg::Node;
+
+use crate::axis;
+use crate::colormap::{ColorMap, ColorMapping};
+use crate::grid::GridType;
+use crate::repr;
+use crate::style;
+use crate::utils;
+use crate::utils::PairWise;
+
+use std::fs::File;
+use std::io::BufWriter;
+use std::io::Write;
+use std::path::Path;
+// To use encoder.set()
+use image::bmp::BMPEncoder;
+use image::png::PNGEncoder;
+use image::ColorType;
+
+use base64::encode;
+
+use crate::render::Renderer;
+
+struct svgRender {
+    fileobject: thing,
+}
+
+impl Renderer for svgRender {
+    fn draw_text() {}
+    fn draw_line() {}
+}
+
+
+
+fn vertical_line<S>(xpos: f64, ymin: f64, ymax: f64, color: S) -> node::element::Line
+where
+    S: AsRef<str>,
+{
+    node::element::Line::new()
+        .set("x1", xpos)
+        .set("x2", xpos)
+        .set("y1", ymin)
+        .set("y2", ymax)
+        .set("stroke", color.as_ref())
+        .set("stroke-width", 1)
+}
+
+
+
+
 
 pub fn draw_y_axis(a: &axis::ContinuousAxis, face_height: f64) -> node::element::Group {
     let axis_line = vertical_line(0.0, 0.0, -face_height, "black");

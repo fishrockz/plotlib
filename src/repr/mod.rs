@@ -26,7 +26,7 @@ pub trait ContinuousRepresentation {
     /// The maximum range in each dimension. Used for auto-scaling axes.
     fn range(&self, dim: u32) -> (f64, f64);
 
-    fn render (
+    fn render(
         &self,
         rendobj: &mut dyn Renderer,
         x_axis: &axis::ContinuousAxis,
@@ -66,7 +66,7 @@ pub trait CategoricalRepresentation {
     /// The ticks that this representation covers. Used to collect all ticks for display.
     fn ticks(&self) -> Vec<String>;
 
-    fn render (
+    fn render(
         &self,
         rendobj: &mut dyn Renderer,
         x_axis: &axis::CategoricalAxis,
@@ -74,7 +74,7 @@ pub trait CategoricalRepresentation {
         face_width: f64,
         face_height: f64,
     );
-/*
+    /*
     fn to_svg(
         &self,
         x_axis: &axis::CategoricalAxis,

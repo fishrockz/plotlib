@@ -1,10 +1,9 @@
 use std::f64;
 
 use crate::axis;
+use crate::render::Renderer;
 use crate::repr::ContinuousRepresentation;
 use crate::style::PointStyle;
-use crate::render::Renderer;
-
 
 /// The scatter *representation*.
 /// It knows its data as well how to style itself
@@ -66,14 +65,14 @@ impl ContinuousRepresentation for Scatter {
         }
     }
 
-    fn render (
+    fn render(
         &self,
         rendobj: &mut dyn Renderer,
         x_axis: &axis::ContinuousAxis,
         y_axis: &axis::ContinuousAxis,
         face_width: f64,
         face_height: f64,
-    ){
+    ) {
         rendobj.face_points(
             &self.data,
             x_axis,
@@ -82,7 +81,6 @@ impl ContinuousRepresentation for Scatter {
             face_height,
             &self.style,
         );
-
     }
 
     /*
