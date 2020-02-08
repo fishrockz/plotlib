@@ -1,12 +1,10 @@
 use std::f64;
 
-use svg;
-
 use crate::axis;
 use crate::repr::ContinuousRepresentation;
 use crate::style::PointStyle;
-use crate::svg_render;
-use crate::text_render;
+use crate::render::Renderer;
+
 
 /// The scatter *representation*.
 /// It knows its data as well how to style itself
@@ -68,6 +66,26 @@ impl ContinuousRepresentation for Scatter {
         }
     }
 
+    fn render (
+        &self,
+        rendobj: &mut dyn Renderer,
+        x_axis: &axis::ContinuousAxis,
+        y_axis: &axis::ContinuousAxis,
+        face_width: f64,
+        face_height: f64,
+    ){
+        rendobj.face_points(
+            &self.data,
+            x_axis,
+            y_axis,
+            face_width,
+            face_height,
+            &self.style,
+        );
+
+    }
+
+    /*
     fn to_svg(
         &self,
         x_axis: &axis::ContinuousAxis,
@@ -105,4 +123,5 @@ impl ContinuousRepresentation for Scatter {
             &self.style,
         )
     }
+    */
 }

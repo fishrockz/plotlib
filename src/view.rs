@@ -16,12 +16,10 @@ use crate::axis;
 use crate::errors::Result;
 use crate::grid::{Grid, GridType};
 use crate::repr::{CategoricalRepresentation, ContinuousRepresentation};
-use crate::svg_render;
-use crate::text_render;
+use crate::render::Renderer;
 
 pub trait View {
-    fn to_svg(&self, face_width: f64, face_height: f64) -> Result<svg::node::element::Group>;
-    fn to_text(&self, face_width: u32, face_height: u32) -> Result<String>;
+    fn plot(&self,  RenderAbst: &mut dyn Renderer, face_width: f64, face_height: f64);
     fn add_grid(&mut self, grid: Grid);
     fn grid(&self) -> &Option<Grid>;
 }
@@ -159,6 +157,23 @@ impl View for ContinuousView {
     /**
     Create an SVG rendering of the view
     */
+
+    fn plot(
+        &self,
+        RenderAbst: &mut dyn Renderer,
+        // TODO: we now need a offset?
+        face_width: f64,
+        face_height: f64
+    ){
+        // TODO: deal with failured
+        let (x_axis, y_axis) = self.create_axes().unwrap();
+
+        for repr in &self.representations {
+            let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
+        }
+    }
+
+    /*
     fn to_svg(&self, face_width: f64, face_height: f64) -> Result<svg::node::element::Group> {
         let mut view_group = svg::node::element::Group::new();
 
@@ -239,6 +254,7 @@ impl View for ContinuousView {
 
         Ok(view_string)
     }
+    */
 
     fn add_grid(&mut self, grid: Grid) {
         self.grid = Some(grid)
@@ -372,7 +388,15 @@ impl CategoricalView {
 }
 
 impl View for CategoricalView {
-    fn to_svg(&self, face_width: f64, face_height: f64) -> Result<svg::node::element::Group> {
+    fn plot(&self, RenderAbst: &mut dyn Renderer, face_width: f64, face_height: f64) {
+                // TODO: deal with failured
+                let (x_axis, y_axis) = self.create_axes().unwrap();
+
+                for repr in &self.representations {
+                    let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
+                }
+    }
+    /*
         let mut view_group = svg::node::element::Group::new();
 
         let (x_axis, y_axis) = self.create_axes()?;
@@ -401,6 +425,7 @@ impl View for CategoricalView {
     fn to_text(&self, _face_width: u32, _face_height: u32) -> Result<String> {
         Ok("".into())
     }
+    */
 
     fn add_grid(&mut self, grid: Grid) {
         self.grid = Some(grid);

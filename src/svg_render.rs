@@ -1,3 +1,5 @@
+
+/*
 use std;
 
 use svg::node;
@@ -21,6 +23,17 @@ use image::png::PNGEncoder;
 use image::ColorType;
 
 use base64::encode;
+
+use crate::render::Renderer;
+
+struct svgRender {
+    fileobject: thing,
+}
+
+impl Renderer for svgRender {
+    fn draw_text() {}
+    fn draw_line() {}
+}
 
 fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
     let range = axis.max() - axis.min();
@@ -585,3 +598,4 @@ mod tests {
         assert_eq!(value_to_face_offset(7.0, &axis, 14.0), 18.0);
     }
 }
+*/

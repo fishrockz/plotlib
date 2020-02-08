@@ -11,8 +11,11 @@ use svg::Node;
 
 use crate::errors::Result;
 use crate::view::View;
+use crate::render::Renderer;
 
 use failure::ResultExt;
+
+
 
 /**
 A single page page laying out the views in a grid
@@ -58,7 +61,7 @@ impl<'a> Page<'a> {
     /**
     Render the plot to an svg document
     */
-    pub fn to_svg(&self) -> Result<svg::Document> {
+    pub fn plot(&self, plotTo: &mut dyn Renderer)  {
         let (width, height) = self.dimensions;
         let mut document = Document::new()
             .set("viewBox", (0, 0, width, height))
@@ -71,33 +74,24 @@ impl<'a> Page<'a> {
 
         // TODO put multiple views in correct places
         for &view in &self.views {
-            let view_group = view
-                .to_svg(f64::from(width - x_margin), f64::from(height - y_margin))?
+            let view_group = view.plot(plotTo, f64::from(width - x_margin), f64::from(height - y_margin) );
+                /*.to_svg(f64::from(width - x_margin), f64::from(height - y_margin))?
                 .set(
                     "transform",
                     format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
                 );
-            document.append(view_group);
+            document.append(view_group);*/
         }
-        Ok(document)
+        //Ok(document)
     }
 
-    /**
-    Render the plot to an `String`
-    */
-    pub fn to_text(&self) -> Result<String> {
-        let (width, height) = self.dimensions;
-        // TODO compose multiple views into a plot
-        let view = self.views[0];
-        view.to_text(width, height)
-    }
-
-    /**
+    /*
     Save the plot to a file.
 
     The type of file will be based on the file extension.
     */
 
+    /*
     pub fn save<P>(&self, path: P) -> Result<()>
     where
         P: AsRef<Path>,
@@ -109,4 +103,5 @@ impl<'a> Page<'a> {
             _ => Ok(()),
         }
     }
+    */
 }

@@ -13,20 +13,10 @@ These points may then be layered with other SVG elements from other representati
 */
 
 use crate::axis;
+use crate::render::Renderer;
 
-mod barchart;
-mod boxplot;
-mod function;
-mod histogram;
-mod imgrid;
-mod line;
 mod scatter;
-pub use barchart::*;
-pub use boxplot::*;
-pub use function::*;
-pub use histogram::*;
-pub use imgrid::*;
-pub use line::*;
+
 pub use scatter::*;
 
 /**
@@ -36,6 +26,15 @@ pub trait ContinuousRepresentation {
     /// The maximum range in each dimension. Used for auto-scaling axes.
     fn range(&self, dim: u32) -> (f64, f64);
 
+    fn render (
+        &self,
+        rendobj: &mut dyn Renderer,
+        x_axis: &axis::ContinuousAxis,
+        y_axis: &axis::ContinuousAxis,
+        face_width: f64,
+        face_height: f64,
+    );
+    /*
     fn to_svg(
         &self,
         x_axis: &axis::ContinuousAxis,
@@ -54,6 +53,7 @@ pub trait ContinuousRepresentation {
         face_width: u32,
         face_height: u32,
     ) -> String;
+    */
 }
 
 /**
@@ -66,6 +66,15 @@ pub trait CategoricalRepresentation {
     /// The ticks that this representation covers. Used to collect all ticks for display.
     fn ticks(&self) -> Vec<String>;
 
+    fn render (
+        &self,
+        rendobj: &mut dyn Renderer,
+        x_axis: &axis::CategoricalAxis,
+        y_axis: &axis::ContinuousAxis,
+        face_width: f64,
+        face_height: f64,
+    );
+/*
     fn to_svg(
         &self,
         x_axis: &axis::CategoricalAxis,
@@ -81,4 +90,5 @@ pub trait CategoricalRepresentation {
         face_width: u32,
         face_height: u32,
     ) -> String;
+    */
 }

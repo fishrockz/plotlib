@@ -1,3 +1,4 @@
+/*
 //! A module for plotting graphs
 
 use std;
@@ -696,3 +697,4 @@ mod tests {
         assert_eq!(overlay(a, b, -1, -1), r);
     }
 }
+*/
