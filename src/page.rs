@@ -11,8 +11,6 @@ use crate::view::View;
 
 use crate::svg_render::Plotter;
 
-use failure::ResultExt;
-
 /**
 A single page page laying out the views in a grid
 */
@@ -102,4 +100,5 @@ impl<'a> Page<'a> {
             _ => Ok(()),
         }
     }
+
 }

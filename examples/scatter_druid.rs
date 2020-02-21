@@ -29,5 +29,24 @@ fn main() {
         .x_label("Some varying variable")
         .y_label("The response of something");
 
-    Page::single(&v).save("scatter.svg").expect("saving svg");
+
+
+    let this_page =Page::single(&v);
+
+    use druid::{
+        widget::{FillStrat, Flex, Image, ImageData, WidgetExt},
+        AppLauncher, Widget, WindowDesc,
+    };
+
+    fn ui_builder() -> impl Widget<u32> {
+        DruidPageWidget::new(this_page).fill_mode(FillStrat::FitWidth)
+    };
+
+    let main_window = WindowDesc::new(ui_builder);
+    let data = 0_u32;
+    AppLauncher::with_window(main_window)
+        .use_simple_logger()
+        .launch(data)
+        .expect("launch failed");
+}
 }
