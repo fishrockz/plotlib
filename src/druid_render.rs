@@ -4,10 +4,9 @@ use crate::style;
 
 use druid::PaintCtx;
 
-
 pub struct PlotterPaintCtx<'a, 'b, 'c> {
     dimensions: (u32, u32),
-    context: &'c mut PaintCtx<'a, 'b>
+    context: &'c mut PaintCtx<'a, 'b>,
 }
 
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
@@ -30,16 +29,13 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
         y_axis: &axis::ContinuousAxis,
         face_width: f64,
         face_height: f64,
-    ){
+    ) {
         //let xaxgp = draw_x_axis(x_axis, face_width);
         //self.top.append(xaxgp);
         //let yaxgp = draw_y_axis(y_axis, face_height);
         //self.top.append(yaxgp);
     }
-
-
 }
-
 
 /*
 

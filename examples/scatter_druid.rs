@@ -29,9 +29,7 @@ fn main() {
         .x_label("Some varying variable")
         .y_label("The response of something");
 
-
-
-    let this_page =Page::single(&v);
+    let this_page = Page::single(&v);
 
     use druid::{
         widget::{FillStrat, Flex, Image, ImageData, WidgetExt},
@@ -48,5 +46,4 @@ fn main() {
         .use_simple_logger()
         .launch(data)
         .expect("launch failed");
-}
 }

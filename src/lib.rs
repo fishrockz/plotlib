@@ -84,9 +84,9 @@ pub mod style;
 pub mod view;
 
 mod axis;
-mod errors;
-mod svg_render;
 mod druid_render;
 mod druid_widget;
+mod errors;
+mod svg_render;
 mod text_render;
 mod utils;
