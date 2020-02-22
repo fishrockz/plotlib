@@ -19,14 +19,50 @@ pub struct DruidPageWidget<T> {
 }
 
 
-impl  DruidPageWidget <T> {
+use crate::repr::Scatter;
+use crate::style::{PointMarker, PointStyle};
+use crate::view::ContinuousView;
+
+
+
+impl <T: Data> DruidPageWidget <T>{
     /// Create an SVG-drawing widget from SvgData.
     ///
     /// The SVG will scale to fit its box constraints.
-    pub fn  new  (page:  Page) -> Self  {
+    pub fn  new  () -> Self  {
+
+
+    let data = [
+        (-3.0, 2.3),
+        (-1.6, 5.3),
+        (0.3, 0.7),
+        (4.3, -1.4),
+        (6.4, 4.3),
+        (8.5, 3.7),
+    ];
+    let s1 = Scatter::from_slice(&data).style(
+        PointStyle::new()
+            .marker(PointMarker::Square)
+            .colour("burlywood")
+            .size(2.),
+    );
+    let s2 = Scatter::from_slice(&[(-1.4, 2.5), (7.2, -0.3)])
+        .style(PointStyle::new().colour("darkseagreen"));
+
+    let v = ContinuousView::new()
+        .add(s1)
+        .add(s2)
+        .x_range(-5., 10.)
+        .y_range(-2., 6.)
+        .x_label("Some varying variable")
+        .y_label("The response of something");
+
+    let mut this_page = Page::single(Box::new(v));
+
+
         DruidPageWidget{
             phantoma: Default::default(),
-            page:  Page,
+            page: this_page,
         }
     }
 
@@ -47,7 +83,7 @@ impl  DruidPageWidget <T> {
     */
 }
 
-impl Widget<T> for DruidPageWidget <T>  {
+impl<T: Data> Widget<T> for DruidPageWidget <T>  {
 
     fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut T, _env: &Env) {}
 
