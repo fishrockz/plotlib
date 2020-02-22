@@ -306,7 +306,7 @@ impl ViridisMap {
             .iter()
             .map(|&(v1, v2, v3)| ((v1 * 255.0) as u8, (v2 * 255.0) as u8, (v3 * 255.0) as u8))
             .collect();
-            ViridisMap { colors: ucols }
+        ViridisMap { colors: ucols }
     }
 }
 

@@ -32,7 +32,7 @@ impl Page {
         }
     }
 
-    pub fn set_dimensions(&mut self, dims: (u32, u32)){
+    pub fn set_dimensions(&mut self, dims: (u32, u32)) {
         self.dimensions = dims;
     }
 
@@ -69,17 +69,17 @@ impl Page {
 
         // TODO put multiple views in correct places
         //for view in self.views {
-            let _view_group = self.views[0].plot(
-                plotTo,
-                f64::from(width - x_margin),
-                f64::from(height - y_margin),
+        let _view_group = self.views[0].plot(
+            plotTo,
+            f64::from(width - x_margin),
+            f64::from(height - y_margin),
+        );
+        /*.to_svg(f64::from(width - x_margin), f64::from(height - y_margin))?
+            .set(
+                "transform",
+                format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
             );
-            /*.to_svg(f64::from(width - x_margin), f64::from(height - y_margin))?
-                .set(
-                    "transform",
-                    format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
-                );
-            document.append(view_group);*/
+        document.append(view_group);*/
         //}
         //Ok(document)
     }

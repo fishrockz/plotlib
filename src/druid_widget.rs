@@ -1,67 +1,55 @@
-
 use std::marker::PhantomData;
 
-
 use druid::{
-    BoxConstraints, Env, Event, EventCtx, LayoutCtx, Data,
-    LifeCycle, LifeCycleCtx, PaintCtx, Rect, RenderContext, Size, UpdateCtx, Widget,
-    Affine,
+    Affine, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, LifeCycle, LifeCycleCtx,
+    PaintCtx, Rect, RenderContext, Size, UpdateCtx, Widget,
 };
-
 
 use crate::druid_render::PlotterPaintCtx;
 use crate::page::Page;
 
-
-
 pub struct DruidPageWidget<T> {
     phantoma: PhantomData<T>,
-    page:  Page,
+    page: Page,
 }
-
 
 use crate::repr::Scatter;
 use crate::style::{PointMarker, PointStyle};
 use crate::view::ContinuousView;
 
-
-
-impl <T: Data> DruidPageWidget <T>{
+impl<T: Data> DruidPageWidget<T> {
     /// Create an SVG-drawing widget from SvgData.
     ///
     /// The SVG will scale to fit its box constraints.
-    pub fn  new  () -> Self  {
+    pub fn new() -> Self {
+        let data = [
+            (-3.0, 2.3),
+            (-1.6, 5.3),
+            (0.3, 0.7),
+            (4.3, -1.4),
+            (6.4, 4.3),
+            (8.5, 3.7),
+        ];
+        let s1 = Scatter::from_slice(&data).style(
+            PointStyle::new()
+                .marker(PointMarker::Square)
+                .colour("burlywood")
+                .size(2.),
+        );
+        let s2 = Scatter::from_slice(&[(-1.4, 2.5), (7.2, -0.3)])
+            .style(PointStyle::new().colour("darkseagreen"));
 
+        let v = ContinuousView::new()
+            .add(s1)
+            .add(s2)
+            .x_range(-5., 10.)
+            .y_range(-2., 6.)
+            .x_label("Some varying variable")
+            .y_label("The response of something");
 
-    let data = [
-        (-3.0, 2.3),
-        (-1.6, 5.3),
-        (0.3, 0.7),
-        (4.3, -1.4),
-        (6.4, 4.3),
-        (8.5, 3.7),
-    ];
-    let s1 = Scatter::from_slice(&data).style(
-        PointStyle::new()
-            .marker(PointMarker::Square)
-            .colour("burlywood")
-            .size(2.),
-    );
-    let s2 = Scatter::from_slice(&[(-1.4, 2.5), (7.2, -0.3)])
-        .style(PointStyle::new().colour("darkseagreen"));
+        let mut this_page = Page::single(Box::new(v));
 
-    let v = ContinuousView::new()
-        .add(s1)
-        .add(s2)
-        .x_range(-5., 10.)
-        .y_range(-2., 6.)
-        .x_label("Some varying variable")
-        .y_label("The response of something");
-
-    let mut this_page = Page::single(Box::new(v));
-
-
-    DruidPageWidget{
+        DruidPageWidget {
             phantoma: Default::default(),
             page: this_page,
         }
@@ -71,12 +59,10 @@ impl <T: Data> DruidPageWidget <T>{
         Size::new(200., 200.)
     }
 
-//    fn get_offset(&self, context_ob: &mut PaintCtx) -> Affine {
+    //    fn get_offset(&self, context_ob: &mut PaintCtx) -> Affine {
     fn get_offset(&self, size: Size) -> Affine {
+        //        let size = context_ob.region().to_rect().size();
 
-
-//        let size = context_ob.region().to_rect().size();
-        
         let x_margin = 90; // should actually depend on y-axis label font size
         let y_margin = 60;
         let x_offset = 0.6 * f64::from(x_margin);
@@ -84,7 +70,7 @@ impl <T: Data> DruidPageWidget <T>{
 
         let height = size.height;
 
-        let offset = ( x_offset, f64::from(height) - y_offset);
+        let offset = (x_offset, f64::from(height) - y_offset);
 
         Affine::new([1.0, 0.0, 0.0, 1.0, offset.0, offset.1])
     }
@@ -102,8 +88,7 @@ impl <T: Data> DruidPageWidget <T>{
     */
 }
 
-impl<T: Data> Widget<T> for DruidPageWidget <T>  {
-
+impl<T: Data> Widget<T> for DruidPageWidget<T> {
     fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut T, _env: &Env) {}
 
     fn lifecycle(&mut self, _ctx: &mut LifeCycleCtx, _event: &LifeCycle, _data: &T, _env: &Env) {}
@@ -136,16 +121,17 @@ impl<T: Data> Widget<T> for DruidPageWidget <T>  {
         //    context: paint_ctx,
         //    dimensions: (300, 400),
         //};
-        
-//        paint_ctx
-  //          .with_save(|ctx| {
-    let size = paint_ctx.region().to_rect().size();
-    self.page.set_dimensions((size.width as u32, size.height as u32));
-                paint_ctx.transform(self.get_offset(size));
-                let mut renderthing = PlotterPaintCtx::new(paint_ctx);        
-                self.page.plot(&mut renderthing);
-    //            Ok(())
-      //      }).unwrap();
+
+        //        paint_ctx
+        //          .with_save(|ctx| {
+        let size = paint_ctx.region().to_rect().size();
+        self.page
+            .set_dimensions((size.width as u32, size.height as u32));
+        paint_ctx.transform(self.get_offset(size));
+        let mut renderthing = PlotterPaintCtx::new(paint_ctx);
+        self.page.plot(&mut renderthing);
+        //            Ok(())
+        //      }).unwrap();
 
         //data.page.plot(&mut renderthing);
     }

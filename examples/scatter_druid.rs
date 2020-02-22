@@ -1,13 +1,9 @@
-use plotlib::druid_widget::{DruidPageWidget};
+use plotlib::druid_widget::DruidPageWidget;
 
 fn main() {
-
-    use druid::{
-        AppLauncher, Widget, WindowDesc,
-    };
+    use druid::{AppLauncher, Widget, WindowDesc};
 
     fn ui_builder() -> impl Widget<u32> {
-        
         DruidPageWidget::new()
     };
 

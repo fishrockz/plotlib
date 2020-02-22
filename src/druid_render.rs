@@ -2,25 +2,26 @@ use crate::axis;
 use crate::render::Renderer;
 use crate::style;
 
-use druid::{PaintCtx, piet::{RenderContext, Color}, kurbo::{Size, Circle, Line, Point}};
-
+use druid::{
+    kurbo::{Circle, Line, Point, Size},
+    piet::{Color, RenderContext},
+    PaintCtx,
+};
 
 pub struct PlotterPaintCtx<'a, 'b, 'c> {
     context: &'c mut PaintCtx<'a, 'b>,
 }
 
-impl <'a, 'b, 'c> PlotterPaintCtx <'a, 'b, 'c> {
+impl<'a, 'b, 'c> PlotterPaintCtx<'a, 'b, 'c> {
     /// Create an SVG-drawing widget from SvgData.
     ///
     /// The SVG will scale to fit its box constraints.
-    pub fn  new (context_ob: &'c mut PaintCtx <'a, 'b> ) -> PlotterPaintCtx < 'a, 'b, 'c > {
+    pub fn new(context_ob: &'c mut PaintCtx<'a, 'b>) -> PlotterPaintCtx<'a, 'b, 'c> {
         PlotterPaintCtx {
             context: context_ob,
             //fill: FillStrat::default(),
         }
     }
-
-
 }
 
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
@@ -48,23 +49,20 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
         //self.top.append(xaxgp);
         //let yaxgp = draw_y_axis(y_axis, face_height);
         //self.top.append(yaxgp);
-        draw_x_axis(&mut self.context, x_axis, face_width )
+        draw_x_axis(&mut self.context, x_axis, face_width)
     }
 }
-
-
 
 pub fn draw_x_axis(painter: &mut PaintCtx, a: &axis::ContinuousAxis, face_width: f64) {
     let _size = Size::new(200., 200.);
     let size = 5.;
     let circle = Circle::new((size / 2., size / 2.), 7.);
 
-    let border_color = Color::rgb8(50, 50, 50) ;
+    let border_color = Color::rgb8(50, 50, 50);
     painter.stroke(circle, &border_color, 100.);
 
     let line_thing = Line::new(Point::new(0., 0.), Point::new(face_width, 0.));
     painter.stroke(line_thing, &border_color, 10.);
-
 }
 
 /*

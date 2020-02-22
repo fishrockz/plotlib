@@ -76,14 +76,14 @@ in this case, interpreting the bins and colours to create SVG elements.
 */
 
 pub mod colormap;
+pub mod druid_render;
+pub mod druid_widget;
 pub mod grid;
 pub mod page;
 pub mod render;
 pub mod repr;
 pub mod style;
 pub mod view;
-pub mod druid_widget;
-pub mod druid_render;
 
 mod axis;
 mod errors;
