@@ -5,6 +5,7 @@ use std::marker::PhantomData;
 use druid::{
     BoxConstraints, Env, Event, EventCtx, LayoutCtx, Data,
     LifeCycle, LifeCycleCtx, PaintCtx, Rect, RenderContext, Size, UpdateCtx, Widget,
+    Affine,
 };
 
 
@@ -60,7 +61,7 @@ impl <T: Data> DruidPageWidget <T>{
     let mut this_page = Page::single(Box::new(v));
 
 
-        DruidPageWidget{
+    DruidPageWidget{
             phantoma: Default::default(),
             page: this_page,
         }
@@ -68,6 +69,24 @@ impl <T: Data> DruidPageWidget <T>{
 
     fn get_size(&self) -> Size {
         Size::new(200., 200.)
+    }
+
+//    fn get_offset(&self, context_ob: &mut PaintCtx) -> Affine {
+    fn get_offset(&self, size: Size) -> Affine {
+
+
+//        let size = context_ob.region().to_rect().size();
+        
+        let x_margin = 90; // should actually depend on y-axis label font size
+        let y_margin = 60;
+        let x_offset = 0.6 * f64::from(x_margin);
+        let y_offset = 0.6 * f64::from(y_margin);
+
+        let height = size.height;
+
+        let offset = ( x_offset, f64::from(height) - y_offset);
+
+        Affine::new([1.0, 0.0, 0.0, 1.0, offset.0, offset.1])
     }
     /*
     /// A builder-style method for specifying the fill strategy.
@@ -117,9 +136,17 @@ impl<T: Data> Widget<T> for DruidPageWidget <T>  {
         //    context: paint_ctx,
         //    dimensions: (300, 400),
         //};
-        let mut renderthing = PlotterPaintCtx::new(paint_ctx);
+        
+//        paint_ctx
+  //          .with_save(|ctx| {
+    let size = paint_ctx.region().to_rect().size();
+    self.page.set_dimensions((size.width as u32, size.height as u32));
+                paint_ctx.transform(self.get_offset(size));
+                let mut renderthing = PlotterPaintCtx::new(paint_ctx);        
+                self.page.plot(&mut renderthing);
+    //            Ok(())
+      //      }).unwrap();
 
-        self.page.plot(&mut renderthing);
         //data.page.plot(&mut renderthing);
     }
 }

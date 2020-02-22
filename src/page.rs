@@ -32,6 +32,10 @@ impl Page {
         }
     }
 
+    pub fn set_dimensions(&mut self, dims: (u32, u32)){
+        self.dimensions = dims;
+    }
+
     /**
     Creates a plot containing a single view
     */

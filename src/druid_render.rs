@@ -2,11 +2,10 @@ use crate::axis;
 use crate::render::Renderer;
 use crate::style;
 
-use druid::{PaintCtx, piet::{RenderContext, Color}, kurbo::{Size, Circle}};
+use druid::{PaintCtx, piet::{RenderContext, Color}, kurbo::{Size, Circle, Line, Point}};
 
 
 pub struct PlotterPaintCtx<'a, 'b, 'c> {
-    dimensions: (u32, u32),
     context: &'c mut PaintCtx<'a, 'b>,
 }
 
@@ -16,11 +15,12 @@ impl <'a, 'b, 'c> PlotterPaintCtx <'a, 'b, 'c> {
     /// The SVG will scale to fit its box constraints.
     pub fn  new (context_ob: &'c mut PaintCtx <'a, 'b> ) -> PlotterPaintCtx < 'a, 'b, 'c > {
         PlotterPaintCtx {
-            dimensions: (300, 400),
             context: context_ob,
             //fill: FillStrat::default(),
         }
     }
+
+
 }
 
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
@@ -60,7 +60,10 @@ pub fn draw_x_axis(painter: &mut PaintCtx, a: &axis::ContinuousAxis, face_width:
     let circle = Circle::new((size / 2., size / 2.), 7.);
 
     let border_color = Color::rgb8(50, 50, 50) ;
-    painter.stroke(circle, &border_color, 100.)
+    painter.stroke(circle, &border_color, 100.);
+
+    let line_thing = Line::new(Point::new(0., 0.), Point::new(face_width, 0.));
+    painter.stroke(line_thing, &border_color, 10.);
 
 }
 
