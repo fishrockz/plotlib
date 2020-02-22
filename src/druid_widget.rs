@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 
 
 use druid::{
-    BoxConstraints, Env, Event, EventCtx, LayoutCtx,
+    BoxConstraints, Env, Event, EventCtx, LayoutCtx, Data,
     LifeCycle, LifeCycleCtx, PaintCtx, Rect, RenderContext, Size, UpdateCtx, Widget,
 };
 
@@ -12,25 +12,25 @@ use crate::druid_render::PlotterPaintCtx;
 use crate::page::Page;
 
 
-/// A widget that renders a SVG
-pub struct DruidPageContainer <'a, 'b>{
-    page:  &'b Page <'a >,
+/// A structure with a page in it
+pub struct DruidPageContainer{
+    page:  Page,
     //fill: FillStrat
 }
 
 
-trait Plotyplot{
-    fn plot(self, render_thing: &mut PlotterPaintCtx);
+pub trait Plotyplot{
+    fn plot(&self, render_thing: &mut PlotterPaintCtx);
 }
 
-impl<'a, 'b> Plotyplot for DruidPageContainer<'a, 'b>{
-    fn plot(self, render_thing: &mut PlotterPaintCtx){
+impl Plotyplot for DruidPageContainer{
+    fn plot(&self, render_thing: &mut PlotterPaintCtx){
         self.page.plot(render_thing)
     }
 }
 
-impl<'a, 'b> DruidPageContainer<'a, 'b>{    
-    pub fn new(page_data:  &'b Page <'a >)->DruidPageContainer<'a, 'b>{
+impl DruidPageContainer{    
+    pub fn new(page_data: Page) -> DruidPageContainer{
         DruidPageContainer{page: page_data}
     }
 }
@@ -41,7 +41,7 @@ pub struct DruidPageWidget<T> {
 }
 
 
-impl  DruidPageWidget<DruidPageContainer <'_, '_>>  {
+impl  DruidPageWidget<DruidPageContainer>  {
     /// Create an SVG-drawing widget from SvgData.
     ///
     /// The SVG will scale to fit its box constraints.

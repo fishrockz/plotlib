@@ -30,7 +30,7 @@ fn main() {
         .x_label("Some varying variable")
         .y_label("The response of something");
 
-    let mut this_page = Page::single(&v);
+    let mut this_page = Page::single(v);
 
     use druid::{
         AppLauncher, Widget, WindowDesc,
@@ -42,9 +42,9 @@ fn main() {
     };
 
     let main_window = WindowDesc::new(ui_builder);
-    let this_page = DruidPageContainer::new(&mut this_page);
+    let mut this_page = DruidPageContainer::new(this_page);
     AppLauncher::with_window(main_window)
         .use_simple_logger()
-        .launch(&mut this_page)
+        .launch(this_page)
         .expect("launch failed");
 }

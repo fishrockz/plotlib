@@ -14,13 +14,13 @@ use crate::svg_render::Plotter;
 /**
 A single page page laying out the views in a grid
 */
-pub struct Page<'a> {
-    views: Vec<&'a dyn View>,
+pub struct Page {
+    views: Vec<Box<dyn View>>,
     num_views: u32,
     dimensions: (u32, u32),
 }
 
-impl<'a> Page<'a> {
+impl Page {
     /**
     Creates an empty page container for plots to be added to
     */
@@ -35,7 +35,7 @@ impl<'a> Page<'a> {
     /**
     Creates a plot containing a single view
     */
-    pub fn single(view: &'a dyn View) -> Self {
+    pub fn single(view: Box<dyn View>) -> Self {
         Page::empty().add_plot(view)
     }
 
@@ -46,7 +46,7 @@ impl<'a> Page<'a> {
     }
 
     /// Add a view to the plot
-    pub fn add_plot(mut self, view: &'a dyn View) -> Self {
+    pub fn add_plot(mut self, view: Box<dyn View>) -> Self {
         self.views.push(view);
         self.num_views += 1;
         self
@@ -64,8 +64,8 @@ impl<'a> Page<'a> {
         let _y_offset = 0.6 * f64::from(y_margin);
 
         // TODO put multiple views in correct places
-        for &view in &self.views {
-            let _view_group = view.plot(
+        //for view in self.views {
+            let _view_group = self.views[0].plot(
                 plotTo,
                 f64::from(width - x_margin),
                 f64::from(height - y_margin),
@@ -76,7 +76,7 @@ impl<'a> Page<'a> {
                     format!("translate({}, {})", x_offset, f64::from(height) - y_offset),
                 );
             document.append(view_group);*/
-        }
+        //}
         //Ok(document)
     }
 
