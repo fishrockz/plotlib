@@ -20,11 +20,18 @@ pub struct DruidPageContainer <'a, 'b>{
     //fill: FillStrat
 }
 
-impl<'a, 'b> DruidPageContainer<'a, 'b>{
-    pub fn plot(self, render_thing: &mut PlotterPaintCtx){
+
+trait plotyplot{
+    fn plot(self, render_thing: &mut PlotterPaintCtx);
+}
+
+impl<'a, 'b> plotyplot for DruidPageContainer<'a, 'b>{
+    fn plot(self, render_thing: &mut PlotterPaintCtx){
         self.page.plot(render_thing)
     }
+}
 
+impl<'a, 'b> DruidPageContainer<'a, 'b>{    
     pub fn new(page_data:  &'b Page <'a >)->DruidPageContainer<'a, 'b>{
         DruidPageContainer{page: page_data}
     }
@@ -63,7 +70,7 @@ impl  DruidPageWidget<DruidPageContainer <'_, '_>>  {
     */
 }
 
-impl<DruidPageContainer> Widget<DruidPageContainer> for DruidPageWidget <DruidPageContainer>  {
+impl<DruidPageContainer: plotyplot> Widget<DruidPageContainer> for DruidPageWidget <DruidPageContainer>  {
 
     fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut DruidPageContainer, _env: &Env) {}
 
@@ -100,7 +107,7 @@ impl<DruidPageContainer> Widget<DruidPageContainer> for DruidPageWidget <DruidPa
         let mut renderthing = PlotterPaintCtx::new(paint_ctx);
 
         data.plot(&mut renderthing);
-        data.page.plot(&mut renderthing);
+        //data.page.plot(&mut renderthing);
     }
 }
 /*
