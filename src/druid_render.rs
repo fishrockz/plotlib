@@ -27,15 +27,32 @@ impl<'a, 'b, 'c> PlotterPaintCtx<'a, 'b, 'c> {
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
     fn face_points(
         &mut self,
-        _s: &[(f64, f64)],
-        _x_axis: &axis::ContinuousAxis,
-        _y_axis: &axis::ContinuousAxis,
-        _face_width: f64,
-        _face_height: f64,
-        _style: &style::PointStyle,
+        s: &[(f64, f64)],
+        x_axis: &axis::ContinuousAxis,
+        y_axis: &axis::ContinuousAxis,
+        face_width: f64,
+        face_height: f64,
+        style: &style::PointStyle,
     ) {
         //let points = draw_face_points(s, x_axis, y_axis, face_width, face_height, style);
         //self.top.append(points);
+        draw_face_points(
+self.context,
+s,
+x_axis,
+y_axis,
+face_width,
+face_height,
+style,
+    /*painter: &mut PaintCtx,
+    s: &[(f64, f64)],
+    x_axis: &axis::ContinuousAxis,
+    y_axis: &axis::ContinuousAxis,
+    face_width: f64,
+    face_height: f64,
+    style: &style::PointStyle,
+    */
+        )
     }
 
     fn plot_axis(
@@ -193,6 +210,38 @@ pub fn draw_y_axis(a: &axis::ContinuousAxis, face_height: f64) -> node::element:
         .add(labels)
         .add(label)
 }
+
+*/
+
+fn value_to_face_offset(value: f64, axis: &axis::ContinuousAxis, face_size: f64) -> f64 {
+    let range = axis.max() - axis.min();
+    (face_size * (value - axis.min())) / range
+}
+
+pub fn draw_face_points(
+    painter: &mut PaintCtx,
+    s: &[(f64, f64)],
+    x_axis: &axis::ContinuousAxis,
+    y_axis: &axis::ContinuousAxis,
+    face_width: f64,
+    face_height: f64,
+    style: &style::PointStyle,
+) {
+    for &(x, y) in s {
+        let x_pos = value_to_face_offset(x, x_axis, face_width);
+        let y_pos = -value_to_face_offset(y, y_axis, face_height);
+            let circle = Circle::new((x_pos, y_pos), 7.);
+        
+             let border_color = Color::rgb8(50, 50, 50);
+            painter.stroke(circle, &border_color, 100.);
+       println!("{},{}",x_pos,y_pos);
+             
+
+    }
+
+}
+/*
+
 
 pub fn draw_face_points(
     s: &[(f64, f64)],
