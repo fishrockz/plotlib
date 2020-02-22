@@ -60,12 +60,12 @@ impl<'a> Page<'a> {
 
         let x_margin = 90; // should actually depend on y-axis label font size
         let y_margin = 60;
-        let x_offset = 0.6 * f64::from(x_margin);
-        let y_offset = 0.6 * f64::from(y_margin);
+        let _x_offset = 0.6 * f64::from(x_margin);
+        let _y_offset = 0.6 * f64::from(y_margin);
 
         // TODO put multiple views in correct places
         for &view in &self.views {
-            let view_group = view.plot(
+            let _view_group = view.plot(
                 plotTo,
                 f64::from(width - x_margin),
                 f64::from(height - y_margin),

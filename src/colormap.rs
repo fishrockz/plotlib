@@ -35,12 +35,14 @@ impl ColorMapping for ColorMap {
 }
 
 #[derive(Debug)]
-pub struct viridisMap {
+pub struct ViridisMap {
     colors: Vec<(u8, u8, u8)>,
 }
 
-impl viridisMap {
+impl ViridisMap {
     pub fn new() -> Self {
+        // I dont like just baking these tables in but thats how matplotlib dose it
+        // so that seems ok for a POC
         let cols: Vec<(f64, f64, f64)> = [
             (0.267004, 0.004874, 0.32941),
             (0.268510, 0.009605, 0.335427),
@@ -304,11 +306,11 @@ impl viridisMap {
             .iter()
             .map(|&(v1, v2, v3)| ((v1 * 255.0) as u8, (v2 * 255.0) as u8, (v3 * 255.0) as u8))
             .collect();
-        viridisMap { colors: ucols }
+            ViridisMap { colors: ucols }
     }
 }
 
-impl ColorMapping for viridisMap {
+impl ColorMapping for ViridisMap {
     fn get_color(&self, v: f64) -> (u8, u8, u8) {
         let clamp = v.max(0.0).min(1.0);
 

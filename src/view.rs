@@ -10,11 +10,10 @@ use std;
 use std::f64;
 
 use failure::format_err;
-use svg::Node;
 
 use crate::axis;
 use crate::errors::Result;
-use crate::grid::{Grid, GridType};
+use crate::grid::Grid;
 use crate::render::Renderer;
 use crate::repr::{CategoricalRepresentation, ContinuousRepresentation};
 
@@ -171,7 +170,7 @@ impl View for ContinuousView {
         RenderAbst.plot_axis(&x_axis, &y_axis, face_width, face_height);
 
         for repr in &self.representations {
-            let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
+            let _repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
         }
     }
 
@@ -398,7 +397,7 @@ impl View for CategoricalView {
         //RenderAbst.plot_axis(&x_axis, &y_axis, face_width, face_height);
 
         for repr in &self.representations {
-            let repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
+            let _repr_group = repr.render(RenderAbst, &x_axis, &y_axis, face_width, face_height);
         }
     }
     /*

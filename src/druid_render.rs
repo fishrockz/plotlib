@@ -25,12 +25,12 @@ impl <'a, 'b, 'c> PlotterPaintCtx <'a, 'b, 'c> {
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
     fn face_points(
         &mut self,
-        s: &[(f64, f64)],
-        x_axis: &axis::ContinuousAxis,
-        y_axis: &axis::ContinuousAxis,
-        face_width: f64,
-        face_height: f64,
-        style: &style::PointStyle,
+        _s: &[(f64, f64)],
+        _x_axis: &axis::ContinuousAxis,
+        _y_axis: &axis::ContinuousAxis,
+        _face_width: f64,
+        _face_height: f64,
+        _style: &style::PointStyle,
     ) {
         //let points = draw_face_points(s, x_axis, y_axis, face_width, face_height, style);
         //self.top.append(points);
@@ -38,10 +38,10 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
 
     fn plot_axis(
         &mut self,
-        x_axis: &axis::ContinuousAxis,
-        y_axis: &axis::ContinuousAxis,
-        face_width: f64,
-        face_height: f64,
+        _x_axis: &axis::ContinuousAxis,
+        _y_axis: &axis::ContinuousAxis,
+        _face_width: f64,
+        _face_height: f64,
     ) {
         //let xaxgp = draw_x_axis(x_axis, face_width);
         //self.top.append(xaxgp);

@@ -1,18 +1,16 @@
-use std::error::Error;
+
 use std::marker::PhantomData;
-use std::str::FromStr;
-use std::sync::Arc;
+
 
 use druid::{
-    kurbo::BezPath, Affine, BoxConstraints, Color, Data, Env, Event, EventCtx, LayoutCtx,
+    BoxConstraints, Env, Event, EventCtx, LayoutCtx,
     LifeCycle, LifeCycleCtx, PaintCtx, Rect, RenderContext, Size, UpdateCtx, Widget,
 };
 
-use crate::axis;
+
 use crate::druid_render::PlotterPaintCtx;
 use crate::page::Page;
-use crate::render::Renderer;
-use crate::style;
+
 
 /// A widget that renders a SVG
 pub struct DruidPageContainer <'a, 'b>{
@@ -21,11 +19,11 @@ pub struct DruidPageContainer <'a, 'b>{
 }
 
 
-trait plotyplot{
+trait Plotyplot{
     fn plot(self, render_thing: &mut PlotterPaintCtx);
 }
 
-impl<'a, 'b> plotyplot for DruidPageContainer<'a, 'b>{
+impl<'a, 'b> Plotyplot for DruidPageContainer<'a, 'b>{
     fn plot(self, render_thing: &mut PlotterPaintCtx){
         self.page.plot(render_thing)
     }
@@ -70,7 +68,7 @@ impl  DruidPageWidget<DruidPageContainer <'_, '_>>  {
     */
 }
 
-impl<DruidPageContainer: plotyplot> Widget<DruidPageContainer> for DruidPageWidget <DruidPageContainer>  {
+impl<DruidPageContainer: Plotyplot> Widget<DruidPageContainer> for DruidPageWidget <DruidPageContainer>  {
 
     fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut DruidPageContainer, _env: &Env) {}
 
