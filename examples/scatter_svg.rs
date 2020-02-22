@@ -29,5 +29,5 @@ fn main() {
         .x_label("Some varying variable")
         .y_label("The response of something");
 
-    Page::single(&v).save("scatter.svg").expect("saving svg");
+    Page::single(Box::new(v)).save("scatter.svg").expect("saving svg");
 }

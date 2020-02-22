@@ -2,7 +2,8 @@ use crate::axis;
 use crate::render::Renderer;
 use crate::style;
 
-use druid::PaintCtx;
+use druid::{PaintCtx, piet::{RenderContext, Color}, kurbo::{Size, Circle}};
+
 
 pub struct PlotterPaintCtx<'a, 'b, 'c> {
     dimensions: (u32, u32),
@@ -38,16 +39,29 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
 
     fn plot_axis(
         &mut self,
-        _x_axis: &axis::ContinuousAxis,
+        x_axis: &axis::ContinuousAxis,
         _y_axis: &axis::ContinuousAxis,
-        _face_width: f64,
+        face_width: f64,
         _face_height: f64,
     ) {
         //let xaxgp = draw_x_axis(x_axis, face_width);
         //self.top.append(xaxgp);
         //let yaxgp = draw_y_axis(y_axis, face_height);
         //self.top.append(yaxgp);
+        draw_x_axis(&mut self.context, x_axis, face_width )
     }
+}
+
+
+
+pub fn draw_x_axis(painter: &mut PaintCtx, a: &axis::ContinuousAxis, face_width: f64) {
+    let _size = Size::new(200., 200.);
+    let size = 5.;
+    let circle = Circle::new((size / 2., size / 2.), 7.);
+
+    let border_color = Color::rgb8(50, 50, 50) ;
+    painter.stroke(circle, &border_color, 100.)
+
 }
 
 /*
