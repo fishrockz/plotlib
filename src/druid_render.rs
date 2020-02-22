@@ -9,6 +9,19 @@ pub struct PlotterPaintCtx<'a, 'b, 'c> {
     context: &'c mut PaintCtx<'a, 'b>,
 }
 
+impl <'a, 'b, 'c> PlotterPaintCtx <'a, 'b, 'c> {
+    /// Create an SVG-drawing widget from SvgData.
+    ///
+    /// The SVG will scale to fit its box constraints.
+    pub fn  new (context_ob: &'c mut PaintCtx <'a, 'b> ) -> PlotterPaintCtx < 'a, 'b, 'c > {
+        PlotterPaintCtx {
+            dimensions: (300, 400),
+            context: context_ob,
+            //fill: FillStrat::default(),
+        }
+    }
+}
+
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
     fn face_points(
         &mut self,

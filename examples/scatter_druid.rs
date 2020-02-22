@@ -2,6 +2,7 @@ use plotlib::page::Page;
 use plotlib::repr::Scatter;
 use plotlib::style::{PointMarker, PointStyle};
 use plotlib::view::ContinuousView;
+use plotlib::druid_widget::DruidPageWidget;
 
 fn main() {
     let data = [
@@ -29,15 +30,15 @@ fn main() {
         .x_label("Some varying variable")
         .y_label("The response of something");
 
-    let this_page = Page::single(&v);
+    let mut this_page = Page::single(&v);
 
     use druid::{
-        widget::{FillStrat, Flex, Image, ImageData, WidgetExt},
         AppLauncher, Widget, WindowDesc,
     };
 
     fn ui_builder() -> impl Widget<u32> {
-        DruidPageWidget::new(this_page).fill_mode(FillStrat::FitWidth)
+        
+        DruidPageWidget::new(&mut this_page)
     };
 
     let main_window = WindowDesc::new(ui_builder);

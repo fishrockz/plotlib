@@ -82,10 +82,10 @@ pub mod render;
 pub mod repr;
 pub mod style;
 pub mod view;
+pub mod druid_widget;
+pub mod druid_render;
 
 mod axis;
-mod druid_render;
-mod druid_widget;
 mod errors;
 mod svg_render;
 mod text_render;

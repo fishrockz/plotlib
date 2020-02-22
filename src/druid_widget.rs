@@ -15,16 +15,16 @@ use crate::render::Renderer;
 use crate::style;
 
 /// A widget that renders a SVG
-pub struct DruidPageWidget {
-    page: Page,
+pub struct DruidPageWidget <'a, 'b>{
+    page:  &'b Page <'a >,
     //fill: FillStrat
 }
 
-impl DruidPageWidget {
+impl <'a, 'b> DruidPageWidget <'a, 'b> {
     /// Create an SVG-drawing widget from SvgData.
     ///
     /// The SVG will scale to fit its box constraints.
-    pub fn new(page_data: Page) -> Self {
+    pub fn  new  (page_data: &'b Page<'a>) -> DruidPageWidget <'a, 'b> {
         DruidPageWidget {
             page: page_data,
             //fill: FillStrat::default(),
@@ -48,7 +48,7 @@ impl DruidPageWidget {
     */
 }
 
-impl<T: Data> Widget<T> for DruidPageWidget {
+impl<'a, 'b, T: Data> Widget<T> for DruidPageWidget  <'a, 'b> {
     //impl Widget<T> for DruidPageWidget<'a> {
     fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut T, _env: &Env) {}
 
@@ -68,7 +68,7 @@ impl<T: Data> Widget<T> for DruidPageWidget {
         if bc.is_width_bounded() {
             bc.max()
         } else {
-            bc.constrain(self.get_size())
+            bc.constrain(Size::new(100., 100.))
         }
     }
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _data: &T, _env: &Env) {
@@ -78,10 +78,11 @@ impl<T: Data> Widget<T> for DruidPageWidget {
         let clip_rect = Rect::ZERO.with_size(paint_ctx.size());
         paint_ctx.clip(clip_rect);
 
-        let renderthing = PlotterPaintCtx {
-            context: paint_ctx,
-            dimensions: (300, 400),
-        };
+        //let mut renderthing = PlotterPaintCtx {
+        //    context: paint_ctx,
+        //    dimensions: (300, 400),
+        //};
+        let mut renderthing = PlotterPaintCtx::new(paint_ctx);
 
         self.page.plot(&mut renderthing);
     }
