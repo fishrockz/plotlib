@@ -2,7 +2,7 @@ use plotlib::page::Page;
 use plotlib::repr::Scatter;
 use plotlib::style::{PointMarker, PointStyle};
 use plotlib::view::ContinuousView;
-use plotlib::druid_widget::DruidPageWidget;
+use plotlib::druid_widget::{DruidPageWidget, DruidPageContainer};
 
 fn main() {
     let data = [
@@ -36,15 +36,15 @@ fn main() {
         AppLauncher, Widget, WindowDesc,
     };
 
-    fn ui_builder() -> impl Widget<u32> {
+    fn ui_builder() -> impl Widget<DruidPageContainer> {
         
-        DruidPageWidget::new(&mut this_page)
+        DruidPageWidget::new()
     };
 
     let main_window = WindowDesc::new(ui_builder);
-    let data = 0_u32;
+    let this_page = DruidPageContainer::new(&mut this_page);
     AppLauncher::with_window(main_window)
         .use_simple_logger()
-        .launch(data)
+        .launch(&mut this_page)
         .expect("launch failed");
 }

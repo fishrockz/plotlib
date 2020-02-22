@@ -15,19 +15,34 @@ use crate::render::Renderer;
 use crate::style;
 
 /// A widget that renders a SVG
-pub struct DruidPageWidget <'a, 'b>{
+pub struct DruidPageContainer <'a, 'b>{
     page:  &'b Page <'a >,
     //fill: FillStrat
 }
 
-impl <'a, 'b> DruidPageWidget <'a, 'b> {
+impl<'a, 'b> DruidPageContainer<'a, 'b>{
+    pub fn plot(self, render_thing: &mut PlotterPaintCtx){
+        self.page.plot(render_thing)
+    }
+
+    pub fn new(page_data:  &'b Page <'a >)->DruidPageContainer<'a, 'b>{
+        DruidPageContainer{page: page_data}
+    }
+}
+
+
+pub struct DruidPageWidget<T> {
+    phantoma: PhantomData<T>,
+}
+
+
+impl  DruidPageWidget<DruidPageContainer <'_, '_>>  {
     /// Create an SVG-drawing widget from SvgData.
     ///
     /// The SVG will scale to fit its box constraints.
-    pub fn  new  (page_data: &'b Page<'a>) -> DruidPageWidget <'a, 'b> {
-        DruidPageWidget {
-            page: page_data,
-            //fill: FillStrat::default(),
+    pub fn  new  () -> Self  {
+        DruidPageWidget{
+            phantoma: Default::default(),
         }
     }
 
@@ -48,19 +63,19 @@ impl <'a, 'b> DruidPageWidget <'a, 'b> {
     */
 }
 
-impl<'a, 'b, T: Data> Widget<T> for DruidPageWidget  <'a, 'b> {
-    //impl Widget<T> for DruidPageWidget<'a> {
-    fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut T, _env: &Env) {}
+impl<DruidPageContainer> Widget<DruidPageContainer> for DruidPageWidget <DruidPageContainer>  {
 
-    fn lifecycle(&mut self, _ctx: &mut LifeCycleCtx, _event: &LifeCycle, _data: &T, _env: &Env) {}
+    fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut DruidPageContainer, _env: &Env) {}
 
-    fn update(&mut self, _ctx: &mut UpdateCtx, _old_data: &T, _data: &T, _env: &Env) {}
+    fn lifecycle(&mut self, _ctx: &mut LifeCycleCtx, _event: &LifeCycle, _data: &DruidPageContainer, _env: &Env) {}
+
+    fn update(&mut self, _ctx: &mut UpdateCtx, _old_data: &DruidPageContainer, _data: &DruidPageContainer, _env: &Env) {}
 
     fn layout(
         &mut self,
         _layout_ctx: &mut LayoutCtx,
         bc: &BoxConstraints,
-        _data: &T,
+        _data: &DruidPageContainer,
         _env: &Env,
     ) -> Size {
         bc.debug_check("DruidPageWidget");
@@ -71,7 +86,7 @@ impl<'a, 'b, T: Data> Widget<T> for DruidPageWidget  <'a, 'b> {
             bc.constrain(Size::new(100., 100.))
         }
     }
-    fn paint(&mut self, paint_ctx: &mut PaintCtx, _data: &T, _env: &Env) {
+    fn paint(&mut self, paint_ctx: &mut PaintCtx, data: &DruidPageContainer, _env: &Env) {
         //let offset_matrix = self.fill.affine_to_fill(paint_ctx.size(), self.get_size());
 
         // TODO is this needed?
@@ -84,7 +99,8 @@ impl<'a, 'b, T: Data> Widget<T> for DruidPageWidget  <'a, 'b> {
         //};
         let mut renderthing = PlotterPaintCtx::new(paint_ctx);
 
-        self.page.plot(&mut renderthing);
+        data.plot(&mut renderthing);
+        data.page.plot(&mut renderthing);
     }
 }
 /*
