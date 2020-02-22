@@ -41,30 +41,31 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
     fn plot_axis(
         &mut self,
         x_axis: &axis::ContinuousAxis,
-        _y_axis: &axis::ContinuousAxis,
+        y_axis: &axis::ContinuousAxis,
         face_width: f64,
-        _face_height: f64,
+        face_height: f64,
     ) {
         //let xaxgp = draw_x_axis(x_axis, face_width);
         //self.top.append(xaxgp);
         //let yaxgp = draw_y_axis(y_axis, face_height);
         //self.top.append(yaxgp);
-        draw_x_axis(&mut self.context, x_axis, face_width)
+        draw_x_axis(&mut self.context, x_axis, face_width);
+        draw_y_axis(&mut self.context, y_axis, face_height);
     }
 }
 
 pub fn draw_x_axis(painter: &mut PaintCtx, a: &axis::ContinuousAxis, face_width: f64) {
-    let _size = Size::new(200., 200.);
-    let size = 5.;
-    let circle = Circle::new((size / 2., size / 2.), 7.);
-
     let border_color = Color::rgb8(50, 50, 50);
-    painter.stroke(circle, &border_color, 100.);
-
     let line_thing = Line::new(Point::new(0., 0.), Point::new(face_width, 0.));
     painter.stroke(line_thing, &border_color, 10.);
 }
 
+pub fn draw_y_axis(painter: &mut PaintCtx, a: &axis::ContinuousAxis, face_height: f64) {
+
+    let border_color = Color::rgb8(50, 50, 50);
+    let line_thing = Line::new(Point::new(0., 0.), Point::new(0., -face_height));
+    painter.stroke(line_thing, &border_color, 10.);
+}
 /*
 
 pub fn draw_x_axis(a: &axis::ContinuousAxis, face_width: f64) -> node::element::Group {
