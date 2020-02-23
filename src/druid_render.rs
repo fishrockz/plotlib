@@ -3,27 +3,37 @@ use crate::render::Renderer;
 use crate::style;
 
 use druid::{
-    kurbo::{Circle, Line, Point, Size},
+    kurbo::{Circle, Line, Point, Rect},
     piet::{Color, RenderContext},
     PaintCtx,
 };
 
+/// A structure to hold PaintCtx to impl the Renderer trait
+/// 
+/// The PaintCtx in side a widgets paint function already has 
+/// two lifetimes already so this widget must extend the life time.
 pub struct PlotterPaintCtx<'a, 'b, 'c> {
     context: &'c mut PaintCtx<'a, 'b>,
 }
 
 impl<'a, 'b, 'c> PlotterPaintCtx<'a, 'b, 'c> {
-    /// Create an SVG-drawing widget from SvgData.
+    /// Create a PlotterPaintCtx from a druid PaintCtx.
     ///
-    /// The SVG will scale to fit its box constraints.
+    /// This structure will own the mutatable borrow for its life time
+    /// there for this object can be created in side the paint function of a widget
+    /// it lives till the end of the paint function but implments the Renderer trait
+    /// so that this can be given to a page to render on to the widget.
     pub fn new(context_ob: &'c mut PaintCtx<'a, 'b>) -> PlotterPaintCtx<'a, 'b, 'c> {
         PlotterPaintCtx {
             context: context_ob,
-            //fill: FillStrat::default(),
         }
     }
 }
 
+
+/// Implement the plotlib Renderer trait
+/// 
+/// This allows PlotterPaintCtx to be a agument of a plotlib's page's plot function
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
     fn face_points(
         &mut self,
@@ -34,8 +44,6 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
         face_height: f64,
         style: &style::PointStyle,
     ) {
-        //let points = draw_face_points(s, x_axis, y_axis, face_width, face_height, style);
-        //self.top.append(points);
         draw_face_points(
             self.context,
             s,
@@ -44,14 +52,6 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
             face_width,
             face_height,
             style,
-            /*painter: &mut PaintCtx,
-            s: &[(f64, f64)],
-            x_axis: &axis::ContinuousAxis,
-            y_axis: &axis::ContinuousAxis,
-            face_width: f64,
-            face_height: f64,
-            style: &style::PointStyle,
-            */
         )
     }
 
@@ -62,10 +62,6 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
         face_width: f64,
         face_height: f64,
     ) {
-        //let xaxgp = draw_x_axis(x_axis, face_width);
-        //self.top.append(xaxgp);
-        //let yaxgp = draw_y_axis(y_axis, face_height);
-        //self.top.append(yaxgp);
         draw_x_axis(&mut self.context, x_axis, face_width);
         draw_y_axis(&mut self.context, y_axis, face_height);
     }
@@ -229,11 +225,34 @@ pub fn draw_face_points(
     for &(x, y) in s {
         let x_pos = value_to_face_offset(x, x_axis, face_width);
         let y_pos = -value_to_face_offset(y, y_axis, face_height);
-        let circle = Circle::new((x_pos, y_pos), 7.);
-
-        let border_color = Color::rgb8(50, 50, 50);
-        painter.stroke(circle, &border_color, 100.);
-        println!("{},{}", x_pos, y_pos);
+        let radius = f64::from(style.get_size().clone().unwrap_or(5.));
+        match style
+            .get_marker()
+            .clone()
+            .unwrap_or(style::PointMarker::Circle)
+        {
+            style::PointMarker::Circle => {
+                let border_color = Color::rgb8(250, 250, 250);
+                let circle = Circle::new((x_pos, y_pos), radius);
+                painter.stroke(circle, &border_color, 0.1);
+            }
+            style::PointMarker::Square => {
+                let border_color = Color::rgb8(250, 250, 250);
+                let radius = radius * 3.;
+                let rectangle = Rect::new(
+                    x_pos - radius,
+                    y_pos - radius,
+                    x_pos + radius,
+                    y_pos + radius,
+                );
+                painter.stroke(rectangle, &border_color, 0.1);
+            }
+            style::PointMarker::Cross => {
+                let border_color = Color::rgb8(250, 250, 250);
+                let circle = Circle::new((x_pos, y_pos), radius);
+                painter.stroke(circle, &border_color, 0.1);
+            }
+        }
     }
 }
 /*
