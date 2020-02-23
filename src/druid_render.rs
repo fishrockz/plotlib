@@ -37,21 +37,21 @@ impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
         //let points = draw_face_points(s, x_axis, y_axis, face_width, face_height, style);
         //self.top.append(points);
         draw_face_points(
-self.context,
-s,
-x_axis,
-y_axis,
-face_width,
-face_height,
-style,
-    /*painter: &mut PaintCtx,
-    s: &[(f64, f64)],
-    x_axis: &axis::ContinuousAxis,
-    y_axis: &axis::ContinuousAxis,
-    face_width: f64,
-    face_height: f64,
-    style: &style::PointStyle,
-    */
+            self.context,
+            s,
+            x_axis,
+            y_axis,
+            face_width,
+            face_height,
+            style,
+            /*painter: &mut PaintCtx,
+            s: &[(f64, f64)],
+            x_axis: &axis::ContinuousAxis,
+            y_axis: &axis::ContinuousAxis,
+            face_width: f64,
+            face_height: f64,
+            style: &style::PointStyle,
+            */
         )
     }
 
@@ -78,7 +78,6 @@ pub fn draw_x_axis(painter: &mut PaintCtx, a: &axis::ContinuousAxis, face_width:
 }
 
 pub fn draw_y_axis(painter: &mut PaintCtx, a: &axis::ContinuousAxis, face_height: f64) {
-
     let border_color = Color::rgb8(50, 50, 50);
     let line_thing = Line::new(Point::new(0., 0.), Point::new(0., -face_height));
     painter.stroke(line_thing, &border_color, 10.);
@@ -230,15 +229,12 @@ pub fn draw_face_points(
     for &(x, y) in s {
         let x_pos = value_to_face_offset(x, x_axis, face_width);
         let y_pos = -value_to_face_offset(y, y_axis, face_height);
-            let circle = Circle::new((x_pos, y_pos), 7.);
-        
-             let border_color = Color::rgb8(50, 50, 50);
-            painter.stroke(circle, &border_color, 100.);
-       println!("{},{}",x_pos,y_pos);
-             
+        let circle = Circle::new((x_pos, y_pos), 7.);
 
+        let border_color = Color::rgb8(50, 50, 50);
+        painter.stroke(circle, &border_color, 100.);
+        println!("{},{}", x_pos, y_pos);
     }
-
 }
 /*
 
