@@ -1,16 +1,16 @@
 //use druid::{AppLauncher, Data, Lens, LensWrap, LocalizedString, Widget, WindowDesc};
 use std::sync::Arc;
 
-use plotlib::druid_widget::{DruidPageWidget, DataPage};
 use druid::widget::WidgetExt;
+use plotlib::druid_widget::{DataPage, DruidPageWidget};
 
+use plotlib::page::Page;
 use plotlib::repr::Scatter;
 use plotlib::style::{PointMarker, PointStyle};
 use plotlib::view::ContinuousView;
-use plotlib::page::Page;
 
 fn main() {
-    use druid::{AppLauncher, Widget, WindowDesc, Data, Lens};
+    use druid::{AppLauncher, Data, Lens, Widget, WindowDesc};
     let data = [
         (-3.0, 2.3),
         (-1.6, 5.3),
@@ -39,19 +39,21 @@ fn main() {
     let this_page = Page::single(Box::new(v));
     #[derive(Clone, Data, Lens)]
     struct AppData {
-        page: DataPage
+        page: DataPage,
     }
-    let this_app = AppData{page: DataPage::new(this_page)};
+    let this_app = AppData {
+        page: DataPage::new(this_page),
+    };
 
-//    fn ui_builder() -> impl Widget<Page> {
-//        DruidPageWidget::new()
-//    };
+    //    fn ui_builder() -> impl Widget<Page> {
+    //        DruidPageWidget::new()
+    //    };
     fn ui_builder() -> impl Widget<AppData> {
         DruidPageWidget::new().lens(AppData::page)
     };
 
     let main_window = WindowDesc::new(ui_builder);
-//    let this_page = 0_u32;
+    //    let this_page = 0_u32;
     AppLauncher::with_window(main_window)
         .use_simple_logger()
         .launch(this_app)

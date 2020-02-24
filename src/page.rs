@@ -32,8 +32,6 @@ impl Page {
         }
     }
 
-
-
     /**
     Creates a plot containing a single view
     */
@@ -75,16 +73,13 @@ impl Page {
     }
 }
 
-
 pub trait Plotpage {
     fn set_dimensions(&mut self, dims: (u32, u32));
     // Run a plot
     fn plot(&self, plotTo: &mut dyn Renderer);
-
 }
 
-
-impl Plotpage for Page{
+impl Plotpage for Page {
     fn set_dimensions(&mut self, dims: (u32, u32)) {
         self.dimensions = dims;
     }
@@ -115,5 +110,4 @@ impl Plotpage for Page{
         //}
         //Ok(document)
     }
-
 }

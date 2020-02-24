@@ -9,8 +9,8 @@ use druid::{
 };
 
 /// A structure to hold PaintCtx to impl the Renderer trait
-/// 
-/// The PaintCtx in side a widgets paint function already has 
+///
+/// The PaintCtx in side a widgets paint function already has
 /// two lifetimes already so this widget must extend the life time.
 pub struct PlotterPaintCtx<'a, 'b, 'c> {
     context: &'c mut PaintCtx<'a, 'b>,
@@ -30,9 +30,8 @@ impl<'a, 'b, 'c> PlotterPaintCtx<'a, 'b, 'c> {
     }
 }
 
-
 /// Implement the plotlib Renderer trait
-/// 
+///
 /// This allows PlotterPaintCtx to be a agument of a plotlib's page's plot function
 impl<'a, 'b, 'c> Renderer for PlotterPaintCtx<'a, 'b, 'c> {
     fn face_points(
