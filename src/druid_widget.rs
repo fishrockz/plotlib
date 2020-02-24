@@ -55,7 +55,7 @@ impl DruidPageWidget {
     */
 }
 
-impl<T: Plotpage> Widget<T> for DruidPageWidget {
+impl<T: Data> Widget<T> for DruidPageWidget {
     fn event(&mut self, ctx: &mut EventCtx, _event: &Event, data: &mut T, _env: &Env) {
 
         let size = ctx.size();

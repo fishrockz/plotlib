@@ -2,6 +2,7 @@
 use std::sync::Arc;
 
 use plotlib::druid_widget::DruidPageWidget;
+use druid::widget::WidgetExt;
 
 use plotlib::repr::Scatter;
 use plotlib::style::{PointMarker, PointStyle};
