@@ -1,4 +1,5 @@
 use std::marker::PhantomData;
+use std::sync::Arc;
 
 use druid::{
     Affine, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, LifeCycle, LifeCycleCtx,
@@ -55,23 +56,23 @@ impl DruidPageWidget {
     */
 }
 
-impl<T: Data> Widget<T> for DruidPageWidget {
-    fn event(&mut self, ctx: &mut EventCtx, _event: &Event, data: &mut T, _env: &Env) {
+impl Widget<Arc<Page>> for DruidPageWidget {
+    fn event(&mut self, ctx: &mut EventCtx, _event: &Event, data: &mut Arc<Page>, _env: &Env) {
 
         let size = ctx.size();
         data
             .set_dimensions((size.width as u32, size.height as u32));
     }
 
-    fn lifecycle(&mut self, _ctx: &mut LifeCycleCtx, _event: &LifeCycle, _data: &T, _env: &Env) {}
+    fn lifecycle(&mut self, _ctx: &mut LifeCycleCtx, _event: &LifeCycle, _data: & Arc<Page>, _env: &Env) {}
 
-    fn update(&mut self, _ctx: &mut UpdateCtx, _old_data: &T, _data: &T, _env: &Env) {}
+    fn update(&mut self, _ctx: &mut UpdateCtx, _old_data: &Arc<Page>, _data: &Arc<Page>, _env: &Env) {}
 
     fn layout(
         &mut self,
         _layout_ctx: &mut LayoutCtx,
         bc: &BoxConstraints,
-        _data: &T,
+        _data: &Arc<Page>,
         _env: &Env,
     ) -> Size {
         bc.debug_check("DruidPageWidget");
@@ -82,7 +83,7 @@ impl<T: Data> Widget<T> for DruidPageWidget {
             bc.constrain(Size::new(100., 100.))
         }
     }
-    fn paint(&mut self, paint_ctx: &mut PaintCtx, data: &T, _env: &Env) {
+    fn paint(&mut self, paint_ctx: &mut PaintCtx, data: &Arc<Page>, _env: &Env) {
         //let offset_matrix = self.fill.affine_to_fill(paint_ctx.size(), self.get_size());
 
         // TODO is this needed?
