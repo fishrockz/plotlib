@@ -1,7 +1,7 @@
 //use druid::{AppLauncher, Data, Lens, LensWrap, LocalizedString, Widget, WindowDesc};
 use std::sync::Arc;
 
-use plotlib::druid_widget::DruidPageWidget;
+use plotlib::druid_widget::{DruidPageWidget, DataPage};
 use druid::widget::WidgetExt;
 
 use plotlib::repr::Scatter;
@@ -39,9 +39,9 @@ fn main() {
     let this_page = Page::single(Box::new(v));
     #[derive(Clone, Data, Lens)]
     struct AppData {
-        page: Arc<Page>
+        page: DataPage
     }
-    let this_app = AppData{page: Arc::new(this_page)};
+    let this_app = AppData{page: DataPage::new(this_page)};
 
 //    fn ui_builder() -> impl Widget<Page> {
 //        DruidPageWidget::new()
