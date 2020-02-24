@@ -32,9 +32,7 @@ impl Page {
         }
     }
 
-    pub fn set_dimensions(&mut self, dims: (u32, u32)) {
-        self.dimensions = dims;
-    }
+
 
     /**
     Creates a plot containing a single view
@@ -55,11 +53,45 @@ impl Page {
         self.num_views += 1;
         self
     }
+    /*
+    Save the plot to a file.
 
-    /**
-    Render the plot to an svg document
+    The type of file will be based on the file extension.
     */
-    pub fn plot(&self, plotTo: &mut dyn Renderer) {
+
+    pub fn save<P>(&self, path: P) -> Result<()>
+    where
+        P: AsRef<Path>,
+    {
+        match path.as_ref().extension().and_then(OsStr::to_str) {
+            Some("svg") => {
+                let mut svgpainter = Plotter::new();
+                self.plot(&mut svgpainter);
+                svgpainter.save(path);
+                Ok(())
+            }
+            _ => Ok(()),
+        }
+    }
+}
+
+
+pub trait Plotpage {
+    fn set_dimensions(&mut self, dims: (u32, u32));
+    // Run a plot
+    fn plot(&self, plotTo: &mut dyn Renderer);
+
+}
+
+
+impl Plotpage for Page{
+    fn set_dimensions(&mut self, dims: (u32, u32)) {
+        self.dimensions = dims;
+    }
+    /**
+    Render the plot to any Renderer
+    */
+    fn plot(&self, plotTo: &mut dyn Renderer) {
         let (width, height) = self.dimensions;
 
         let x_margin = 90; // should actually depend on y-axis label font size
@@ -84,24 +116,4 @@ impl Page {
         //Ok(document)
     }
 
-    /*
-    Save the plot to a file.
-
-    The type of file will be based on the file extension.
-    */
-
-    pub fn save<P>(&self, path: P) -> Result<()>
-    where
-        P: AsRef<Path>,
-    {
-        match path.as_ref().extension().and_then(OsStr::to_str) {
-            Some("svg") => {
-                let mut svgpainter = Plotter::new();
-                self.plot(&mut svgpainter);
-                svgpainter.save(path);
-                Ok(())
-            }
-            _ => Ok(()),
-        }
-    }
 }
